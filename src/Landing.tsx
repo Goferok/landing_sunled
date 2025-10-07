@@ -167,6 +167,8 @@ export default function Landing() {
         transition: "background-color 1s ease",
       }}
     >
+        {/* Якорь для кнопки “Главная” */}
+<div id="home" className="absolute top-0"></div>
     {/* === Hero Preview (широкое фото окна в интерьере, на весь экран) === */}
 <motion.section
   initial={{ opacity: 0, scale: 1.05 }}
@@ -304,10 +306,9 @@ export default function Landing() {
           </button>
         </motion.div>
       </motion.section>
-
+            
       {/* === HERO (десктоп) — поочерёдные появления + “дышащий” свет за окном === */}
       <motion.section
-        id="home"
         className="hidden md:flex flex-row items-center justify-between max-w-7xl w-full px-10 py-20 mx-auto"
         variants={staggerContainer} // 🔹 NEW
         initial="hidden"            // 🔹 NEW
