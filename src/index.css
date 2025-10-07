@@ -22,3 +22,24 @@ html, body {
 }
 /* Тест-полоса: увидишь тонкую красную линию сверху = Tailwind работает */
 .test-tailwind-ok { height: 4px; background: rgb(239 68 68); } /* bg-red-500 */
+/* Эффект медленного дыхания света */
+@keyframes slow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+.animate-slow-pulse {
+  animation: slow-pulse 5s ease-in-out infinite;
+}
+/* мягкое “дыхание света” */
+@keyframes pulse-slow {
+  0%, 100% { opacity: .35; transform: scale(1); }
+  50% { opacity: .55; transform: scale(1.03); }
+}
+.animate-pulse-slow { animation: pulse-slow 6s ease-in-out infinite; }
+
+/* 3D-утилиты для FlipCard (у тебя уже используются классы – дублировать не нужно, если они есть) */
+.perspective { perspective: 1200px; }
+.transform-style-preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
