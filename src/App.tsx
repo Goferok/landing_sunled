@@ -1,4 +1,3 @@
-import React from "react";
 import Landing from "./Landing";
 import "./index.css"; // убедись, что стили Tailwind подключены
 
