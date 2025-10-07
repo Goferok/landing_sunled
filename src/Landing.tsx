@@ -307,6 +307,7 @@ export default function Landing() {
 
       {/* === HERO (десктоп) — поочерёдные появления + “дышащий” свет за окном === */}
       <motion.section
+        id="home"
         className="hidden md:flex flex-row items-center justify-between max-w-7xl w-full px-10 py-20 mx-auto"
         variants={staggerContainer} // 🔹 NEW
         initial="hidden"            // 🔹 NEW
