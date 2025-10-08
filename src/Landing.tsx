@@ -101,7 +101,7 @@ const modes = [
 // ====== Компоненты ======
 
 function Gallery({ images }: { images: string[] }) {
-    
+
   return (
     <>
       {/* mobile scroll */}
@@ -221,7 +221,7 @@ export default function Landing() {
   </motion.div>
 </motion.section>
 
-    
+
 
 
 
@@ -236,7 +236,7 @@ export default function Landing() {
       >
         {/* Текст */}
         <motion.h1
-          variants={fadeInUp} // 🔹 NEW
+      
           className="text-3xl font-bold text-neutral-900 leading-snug px-4"
         >
           Искусственное окно —{" "}
@@ -306,9 +306,11 @@ export default function Landing() {
           </button>
         </motion.div>
       </motion.section>
+
             
       {/* === HERO (десктоп) — поочерёдные появления + “дышащий” свет за окном === */}
       <motion.section
+        id="home"
         className="hidden md:flex flex-row items-center justify-between max-w-7xl w-full px-10 py-20 mx-auto"
         variants={staggerContainer} // 🔹 NEW
         initial="hidden"            // 🔹 NEW
@@ -509,7 +511,7 @@ export default function Landing() {
     {[
       {
         title: "Естественный свет",
-        frontNote: "Плавный переход отрассвета до заката.",
+        frontNote: "Плавный переход от рассвета до заката.",
         backText:
           "Высокий индекс цветопередачи CRI 90+ и динамическая регулировка цветовой температуры от 3000K до 5700K создают свет, максимально близкий к солнечному.",
         image: lightIcon,
@@ -537,51 +539,49 @@ export default function Landing() {
 
 
       {/* Где особенно полезно */}
-<section id="places" className="py-20 bg-white text-center">
-  <h2 className="text-4xl font-semibold text-neutral-900 mb-16">
+<section id="places" className="py-20 w-full bg-white">
+  <h2 className="text-4xl font-semibold text-center text-neutral-900 mb-16 px-4">
     Где Искусственное окно особенно полезно
   </h2>
 
   {/* ===== Дом ===== */}
   <div className="max-w-5xl mx-auto">
     <div className="mb-8">
-  <h3 className="text-2xl font-semibold text-amber-700">Дом</h3>
+  <h3 className="text-2xl font-semibold text-amber-700 text-center">Дом</h3>
   <div className="w-10 h-[2px] bg-amber-500 mx-auto mt-2 rounded-full"></div>
 </div>
 
     <div className="max-w-3xl mx-auto text-neutral-800 leading-relaxed space-y-5">
-      <p className="text-xl font-semibold text-neutral-900">
+      <p className="text-xl font-semibold text-neutral-900 text-center">
         Просыпайтесь с рассветом и засыпайте в мягком вечернем свете.
       </p>
 
-      <p className="text-[17px]">
+      <p className="text-[17px] text-center">
         Искусственное окно наполняет комнату естественным сиянием, меняя оттенок света в течение дня —
         от бодрящего утреннего до тёплого вечернего. Оно бережно гаснет, когда вы уходите,
         создавая ощущение живого солнца у вас дома.
       </p>
 
-      <p className="text-[17px]">
+      <p className="text-[17px] text-center">
         Идеально для <strong>спальни, гостиной и детской</strong> — там, где важны уют,
         мягкий свет и естественный ритм дня.
       </p>
+      <br></br>
     </div>
 
-    {/* Галерея */}
-    <div className="mt-14 grid md:grid-cols-3 gap-6 px-6">
+
+
+    {/* галерея */}
+    <div className="hidden md:grid grid-cols-3 gap-6 px-4">
       {[room1, room2, room3].map((src, i) => (
-        <div key={i} className="overflow-hidden rounded-2xl shadow-md">
-          <img
-            src={src}
-            alt="Домашний интерьер с Искусственным окном"
-            className="object-cover h-[480px] w-full transition-transform duration-500 hover:scale-[1.03]"
-          />
-        </div>
+        <img
+          key={i}
+          src={src}
+          alt="Домашний интерьер с Искусственным окном"
+          className="rounded-2xl h-[600px] w-full object-cover shadow-lg hover:scale-105 transition-transform"
+        />
       ))}
     </div>
-
-
-
-
 
     {/* mobile scroll — центрирование изображений */}
 <div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
@@ -603,7 +603,7 @@ export default function Landing() {
 
   </div>
 
-  {/* ===== ОФИСЫ ===== */}
+   {/* ===== ОФИСЫ ===== */}
 <div className="max-w-5xl mx-auto mt-24">
   <div className="mb-8 text-center">
     <h3 className="text-2xl font-semibold text-amber-700">Офисы</h3>
@@ -628,38 +628,41 @@ export default function Landing() {
     <p className="text-[17px]">
       <strong>Результат —</strong> команда работает дольше без усталости, а пространство выглядит современно и живо.
     </p>
+    <br></br>
   </div>
 
-  {/* Галерея */}
-  <div className="mt-14 grid md:grid-cols-3 gap-6 px-6">
-    {[office1, office2, office3].map((src, i) => (
-      <div key={i} className="overflow-hidden rounded-2xl shadow-md">
+    <div className="hidden md:grid grid-cols-3 gap-6 px-4">
+      {[office1, office2, office3].map((src, i) => (
         <img
+          key={i}
           src={src}
           alt="Офисное пространство с Искусственным окном"
-          className="object-cover h-[480px] w-full transition-transform duration-500 hover:scale-[1.03]"
+          className="rounded-2xl h-[600px] w-full object-cover shadow-lg hover:scale-105 transition-transform"
         />
-      </div>
-    ))}
-  </div>
+      ))}
+    </div>
 
-  {/* mobile scroll */}
-  <div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
-    <div className="shrink-0 w-[calc(50vw-10rem)]" />
-    {[office1, office2, office3].map((src, i) => (
-      <img
-        key={i}
-        src={src}
-        alt=""
-        className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
-      />
-    ))}
-    <div className="shrink-0 w-[calc(50vw-10rem)]" />
-  </div>
+    {/* mobile scroll — центрирование изображений */}
+<div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
+  {/* Пустой отступ слева для центрирования первого изображения */}
+  <div className="shrink-0 w-[calc(50vw-10rem)]" />
+
+  { [office1, office2, office3].map((src, i) => (
+    <img
+      key={i}
+      src={src}
+      alt=""
+      className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
+    />
+  ))}
+
+  {/* Пустой отступ справа для центрирования последнего изображения */}
+  <div className="shrink-0 w-[calc(50vw-10rem)]" />
 </div>
 
+  </div>
 
-{/* ===== ОБРАЗОВАТЕЛЬНЫЕ УЧРЕЖДЕНИЯ ===== */}
+  {/* ===== ОБРАЗОВАТЕЛЬНЫЕ УЧРЕЖДЕНИЯ ===== */}
 <div className="max-w-5xl mx-auto mt-24">
   <div className="mb-8 text-center">
     <h3 className="text-2xl font-semibold text-amber-700">Образовательные учреждения</h3>
@@ -681,34 +684,37 @@ export default function Landing() {
       <strong>Результат —</strong> комфортное пространство, где детям легче учиться,
       меньше устают глаза и сохраняется гармоничный ритм дня.
     </p>
+    <br></br>
   </div>
 
-  {/* Галерея */}
-  <div className="mt-14 grid md:grid-cols-3 gap-6 px-6">
-    {[kids1, kids2, kids3].map((src, i) => (
-      <div key={i} className="overflow-hidden rounded-2xl shadow-md">
+    <div className="hidden md:grid grid-cols-3 gap-6 px-4">
+      {[kids1, kids2, kids3].map((src, i) => (
         <img
+          key={i}
           src={src}
           alt="Класс или детская комната с Искусственным окном"
-          className="object-cover h-[480px] w-full transition-transform duration-500 hover:scale-[1.03]"
+          className="rounded-2xl h-[600px] w-full object-cover shadow-lg hover:scale-105 transition-transform"
         />
-      </div>
-    ))}
-  </div>
+      ))}
+    </div>
 
-  {/* mobile scroll */}
-  <div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
-    <div className="shrink-0 w-[calc(50vw-10rem)]" />
-    {[kids1, kids2, kids3].map((src, i) => (
-      <img
-        key={i}
-        src={src}
-        alt=""
-        className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
-      />
-    ))}
-    <div className="shrink-0 w-[calc(50vw-10rem)]" />
-  </div>
+    {/* mobile scroll — центрирование изображений */}
+<div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
+  {/* Пустой отступ слева для центрирования первого изображения */}
+  <div className="shrink-0 w-[calc(50vw-10rem)]" />
+
+  { [kids1, kids2, kids3].map((src, i) => (
+    <img
+      key={i}
+      src={src}
+      alt=""
+      className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
+    />
+  ))}
+
+  {/* Пустой отступ справа для центрирования последнего изображения */}
+  <div className="shrink-0 w-[calc(50vw-10rem)]" />
+</div>
 </div>
 
 </section>
@@ -726,12 +732,12 @@ export default function Landing() {
         <button onClick={() => setShowModal(true)} className="bg-amber-400 hover:bg-amber-500 text-black font-semibold py-4 px-10 rounded-xl shadow-md transition text-lg">
           Почувствуй свет солнца →
         </button>
-        
+
       </section>
       {/* ===== FOOTER ===== */}
 <footer className="bg-neutral-900 text-white py-16">
   <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
-    
+
     {/* Левая колонка */}
     <div>
       <h3 className="text-2xl font-semibold mb-4">Искусственное окно</h3>
@@ -938,6 +944,4 @@ function FlipCard({ title, frontNote, backText, image }: FlipCardProps) {
     </motion.div>
   );
 }
-
-
 
