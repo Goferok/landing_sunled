@@ -1,224 +1,384 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { SunMedium, Cpu, Smartphone, Menu, X } from "lucide-react";
 
-// Изображения для режимов свечения
+// === Изображения ===
+import windowinterior from "./assets/window-interior1.png";
+import windowinterior2 from "./assets/window-interior2.png";
+import windowinterior3 from "./assets/window-interior3.png";
+import room2 from "./assets/room2.png";
+import office4 from "./assets/office4.png";
+import office2 from "./assets/office.png";
+import kids2 from "./assets/kids2.png";
+import spectrumHarmful from "./assets/spectrum_harmful.png";
+import spectrumSafe from "./assets/spectrum_safe.png";
 import window3000 from "./assets/window-3000.png";
 import window4000 from "./assets/window-4000.png";
 import window5700 from "./assets/window-5700.png";
+import sky from "./assets/sky.png";
 
-// Изображения для галереи “Дом”
-import room1 from "./assets/room.png";
-import room2 from "./assets/room2.png";
-import room3 from "./assets/room3.png";
-// Изображения для галереи “Офис”
-import office1 from "./assets/office.png";
-import office2 from "./assets/office2.png";
-import office3 from "./assets/office3.png";
-// Изображения для галереи “Образование”
-import kids1 from "./assets/kids.png";
-import kids2 from "./assets/kids2.png";
-import kids3 from "./assets/kids3.png";
-
-import lightIcon from "./assets/light-rays.png";
-import chipIcon from "./assets/chip-ai.png";
-import phoneIcon from "./assets/smart-control.png";
-import windowinterior from "./assets/window-interior1.png";
-
-
-
-// Изображения спектров
-import spectrumHarmful from "./assets/spectrum_harmful.png";
-import spectrumSafe from "./assets/spectrum_safe.png";
-
-/* ---------- 🌤 Slow & Cinematic Animations ---------- */
-import type { Variants, Transition } from "framer-motion";
-
-// Более “медленная” кривая, как затухающий свет
+/* ---------- Анимации ---------- */
 const easing: [number, number, number, number] = [0.16, 1, 0.3, 1];
-
-const fadeInUp: Variants = {
+const fadeInUp = {
   hidden: { opacity: 0, y: 60 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 1.8,          // 🕐 почти 2 секунды
-      ease: easing as Transition["ease"],
-    },
+    transition: { duration: 1.8, ease: easing },
   },
 };
-
-const fadeIn: Variants = {
+const fadeIn = {
   hidden: { opacity: 0, scale: 0.98 },
   visible: {
     opacity: 1,
     scale: 1,
-    transition: {
-      duration: 2.2,          // 🕐 дольше всего (как дыхание)
-      ease: easing as Transition["ease"],
-    },
+    transition: { duration: 2.2, ease: easing },
   },
 };
-
-const staggerContainer: Variants = {
+const staggerContainer = {
   hidden: { opacity: 1 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.55,  // 🕐 пауза между элементами почти полсекунды
-      delayChildren: 0.4,     // первая пауза перед появлением
-    },
-  },
-};
-/* -------------------------------------------------------------------- */
-/* 🔹 Плавные эффекты появления при скролле */
-const revealUp = {
-  hidden: { opacity: 0, y: 80 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 1.6, ease: [0.16, 1, 0.3, 1] },
+    transition: { staggerChildren: 0.55, delayChildren: 0.4 },
   },
 };
 
-const fadeInDelayed = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.4 },
-  },
-};
-
-const modes = [
-  { name: "3000K", color: "#F5E6C8", image: window3000 },
-  { name: "4000K", color: "#F3EEDC", image: window4000 },
-  { name: "5700K", color: "#E7EEF5", image: window5700 },
-];
-
-// ====== Компоненты ======
-
-function Gallery({ images }: { images: string[] }) {
-
+function MonoIcon({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      {/* mobile scroll */}
-      <div className="md:hidden -mx-2 mt-4 overflow-x-auto pb-2">
-        <ul className="flex gap-3 px-2 snap-x snap-mandatory">
-          {images.map((src, i) => (
-            <li key={i} className="snap-start shrink-0">
-              <img
-                src={src}
-                alt=""
-                className="h-36 w-64 object-cover rounded-xl shadow-md"
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* desktop grid */}
-      <div className="hidden md:grid grid-cols-3 gap-3 mt-4">
-        {images.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt=""
-            className="h-32 w-full object-cover rounded-xl shadow-md"
-          />
-        ))}
-      </div>
-    </>
-  );
-}
-
-function ScenarioCard({
-  title,
-  desc,
-  images,
-}: {
-  title: string;
-  desc: string;
-  images: string[];
-}) {
-  return (
-    <div className="p-8 rounded-2xl bg-white shadow-sm hover:shadow-lg transition text-left">
-      <h3 className="text-xl font-semibold mb-2 text-amber-600">{title}</h3>
-      <p className="text-slate-700">{desc}</p>
-      <Gallery images={images} />
+    <div className="text-amber-600 w-16 h-16 flex items-center justify-center">
+      {children}
     </div>
   );
 }
 
-// ====== Основной компонент ======
-
 export default function Landing() {
-  const [activeMode, setActiveMode] = useState(modes[0]);
   const [showModal, setShowModal] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+// === Активная секция (для точек справа) ===
+const [activeSection, setActiveSection] = useState("home");
+// === Определение мобильного экрана ===
+  const [isMobile, setIsMobile] = useState(false);
 
+  useEffect(() => {
+    const checkScreen = () => setIsMobile(window.innerWidth < 768); // mobile <768px
+    checkScreen(); // сразу проверяем при загрузке
+    window.addEventListener("resize", checkScreen);
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
+useEffect(() => {
+  const sections = document.querySelectorAll("section[id]");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+  return () => observer.disconnect();
+}, []);
+
+  // === Автоматическое форматирование телефона ===
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.startsWith("8")) value = "7" + value.slice(1);
+    if (!value.startsWith("7")) value = "7" + value;
+    if (value.length > 1)
+      value =
+        "+" +
+        value[0] +
+        " (" +
+        (value.slice(1, 4) || "") +
+        (value.length > 4 ? ") " : "") +
+        (value.slice(4, 7) || "") +
+        (value.length > 7 ? "-" : "") +
+        (value.slice(7, 9) || "") +
+        (value.length > 9 ? "-" : "") +
+        (value.slice(9, 11) || "");
+    setPhone(value.slice(0, 18));
+  };
+
+  const modes = [
+    { name: "3000K", color: "#F5E6C8", image: window3000 },
+    { name: "4000K", color: "#F3EEDC", image: window4000 },
+    { name: "5700K", color: "#E7EEF5", image: window5700 },
+  ];
+  const [activeMode, setActiveMode] = useState(modes[0]);
 
   return (
-    <div
-      className="min-h-screen transition-colors duration-700 flex flex-col items-center"
-      style={{
-        backgroundColor: activeMode.color,
-        transition: "background-color 1s ease",
-      }}
-    >
-        {/* Якорь для кнопки “Главная” */}
-<div id="home" className="absolute top-0"></div>
-    {/* === Hero Preview (широкое фото окна в интерьере, на весь экран) === */}
+    <div className="relative h-screen w-full overflow-hidden">
+      {/* === ШАПКА === */}
+      <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 backdrop-blur-md border-b border-neutral-200">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+          <a href="#home" className="flex items-center gap-2">
+            <img src="/logo3.png" alt="Логотип" className="h-18 w-auto" />
+            <span className="text-sm sm:text-base font-semibold text-neutral-900">
+              Искусственное окно
+            </span>
+          </a>
+          <nav className="hidden md:flex items-center gap-6 text-sm text-neutral-700">
+            <a href="#home" className="hover:text-amber-600 transition">
+              Главная
+            </a>
+            <a href="#benefits" className="hover:text-amber-600 transition">
+              Технология
+            </a>
+            <a href="#why" className="hover:text-amber-600 transition">
+              Безопасность
+            </a>
+            <a href="#places" className="hover:text-amber-600 transition">
+              Применение
+            </a>
+            <button
+              onClick={() => setShowModal(true)}
+              className="ml-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg"
+            >
+              Заказать демо
+            </button>
+          </nav>
+          <button
+            className="md:hidden text-neutral-800 hover:text-amber-600 transition"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
+      </header>
+        {/* === Мобильное меню (выпадает под шапкой) === */}
+{isMenuOpen && (
+  <div className="fixed top-14 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-neutral-200 z-30 md:hidden animate-fadeIn">
+    <nav className="flex flex-col items-center text-neutral-800 py-6 space-y-4 text-base">
+      <a
+        href="#home"
+        className="hover:text-amber-600 transition"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Главная
+      </a>
+      <a
+        href="#benefits"
+        className="hover:text-amber-600 transition"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Технология
+      </a>
+      <a
+        href="#why"
+        className="hover:text-amber-600 transition"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Безопасность
+      </a>
+      <a
+        href="#places"
+        className="hover:text-amber-600 transition"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        
+        Где полезно
+      </a>
+      <a
+        href="#contacts"
+        className="hover:text-amber-600 transition"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        Контакты
+      </a>
+      <button
+        onClick={() => {
+          setShowModal(true);
+          setIsMenuOpen(false);
+        }}
+        className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-2 rounded-lg transition"
+      >
+        Заказать демо
+      </button>
+    </nav>
+  </div>
+)}
+{/* === Боковая навигация (точки справа) === */}
+<div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-10 z-40 hidden md:flex">
+  {["home", "modes", "benefits", "why", "places", "order"].map((id) => (
+    <button
+      key={id}
+      onClick={() =>
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+      }
+      className={`w-5 h-5 rounded-full transition-all duration-300 ${
+        activeSection === id
+          ? "bg-amber-500 scale-150 shadow-md"
+          : "bg-neutral-400/40 hover:bg-amber-400/70"
+      }`}
+    />
+  ))}
+</div>
+      {/* === Контейнер постраничной прокрутки === */}
+      <motion.div
+        className="h-screen w-full overflow-y-scroll snap-y snap-mandatory scroll-smooth"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+      >
+
+{/* === 1️⃣ HERO-СЛАЙДЕР (адаптивные изображения) === */}
+
 <motion.section
-  initial={{ opacity: 0, scale: 1.05 }}
-  animate={{ opacity: 1, scale: 1 }}
-  transition={{ duration: 1.6, ease: [0.25, 1, 0.5, 1] }}
-  className="relative w-full h-screen overflow-hidden bg-neutral-100 flex items-center justify-center"
+  id="home"
+  className="relative h-screen w-full flex flex-col items-center justify-end text-center snap-start overflow-hidden"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ duration: 1.2 }}
 >
-  {/* Фоновое изображение */}
-  <img
-    src={windowinterior}
-    alt="Искусственное окно в интерьере"
-    className="w-full h-full object-cover object-center brightness-[0.95]"
-  />
+  {(() => {
+    const desktopSlides = [
+      {
+        image: windowinterior, // офис
+        title: "Естественный ритм в вашем офисе",
+        subtitle:
+          "Поддерживайте концентрацию и энергию на протяжении всего дня.",
+      },
+      {
+        image: windowinterior3, // квартира
+        title: "Свет, который оживляет пространство",
+        subtitle:
+          "Искусственное окно — естественное солнце там, где его не хватает.",
+      },
+      {
+        image: windowinterior2, // школа
+        title: "Комфортный свет для школ и детских садов",
+        subtitle:
+          "Безопасный спектр и дневная динамика для здоровья и внимания детей.",
+      },
+    ];
 
-  {/* Световой градиент поверх изображения */}
-  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/60 via-transparent to-transparent"></div>
+    const mobileSlides = [
+      {
+        image: office2, // мобильная версия офиса
+        title: "Естественный ритм в вашем офисе",
+        subtitle:
+          "Поддерживайте концентрацию и энергию на протяжении всего дня.",
+      },
+      {
+        image: room2, // мобильная версия комнаты
+        title: "Свет, который оживляет пространство",
+        subtitle:
+          "Искусственное окно — естественное солнце там, где его не хватает.",
+      },
+      {
+        image: kids2, // мобильная версия школы
+        title: "Комфортный свет для школ и детских садов",
+        subtitle:
+          "Безопасный спектр и дневная динамика для здоровья и внимания детей.",
+      },
+    ];
 
-  {/* Лёгкое сияние света — как дыхание */}
-  <motion.div
-    className="absolute bottom-[30%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[160px] opacity-40 pointer-events-none"
-    style={{ background: "radial-gradient(circle, rgba(255,220,150,0.4) 0%, transparent 70%)" }}
-    animate={{ opacity: [0.3, 0.45, 0.3], scale: [1, 1.05, 1] }}
-    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-  />
+    const slides = isMobile ? mobileSlides : desktopSlides;
 
-  {/* Текст поверх изображения */}
-  <motion.div
-    className="absolute bottom-24 text-center text-white px-6"
-    initial={{ opacity: 0, y: 40 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.8, duration: 1.2 }}
-  >
-    <h2 className="text-3xl md:text-5xl font-bold drop-shadow-lg mb-4">
-      Свет, который оживляет пространство
-    </h2>
-    <p className="text-lg md:text-xl opacity-90">
-      Искусственное окно — естественное солнце там, где его не хватает
-    </p>
-  </motion.div>
+    const [[page, direction], setPage] = useState<[number, number]>([0, 0]);
+    const currentSlide = ((page % slides.length) + slides.length) % slides.length;
 
-  {/* Стрелка вниз — подсказка для пользователя */}
-  <motion.div
-    className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white opacity-70"
-    animate={{ y: [0, 8, 0] }}
-    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-  >
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-  </motion.div>
+    const paginate = (newDirection: number) =>
+      setPage(([p]) => [p + newDirection, newDirection]);
+
+    const swipePower = (offset: number, velocity: number) =>
+      Math.abs(offset) * velocity;
+
+    const swipeConfidenceThreshold = 10000;
+
+    return (
+      <>
+        {/* === СЛАЙД со свайпом === */}
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <motion.img
+            key={slides[currentSlide].image}
+            src={slides[currentSlide].image}
+            alt="Искусственное окно"
+            custom={direction}
+            className="absolute inset-0 w-full h-full object-cover brightness-[0.9] select-none touch-pan-y"
+            variants={{
+              enter: (dir: number) => ({
+                x: dir > 0 ? 1000 : -1000,
+                opacity: 0,
+                scale: 1.05,
+              }),
+              center: { x: 0, opacity: 1, scale: 1 },
+              exit: (dir: number) => ({
+                x: dir > 0 ? -1000 : 1000,
+                opacity: 0,
+                scale: 1.05,
+              }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{
+              x: { type: "spring", stiffness: 260, damping: 30 },
+              opacity: { duration: 0.4 },
+            }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.8}
+            onDragEnd={(e, { offset, velocity }) => {
+              const swipe = swipePower(offset.x, velocity.x);
+              if (swipe < -swipeConfidenceThreshold) paginate(1);
+              else if (swipe > swipeConfidenceThreshold) paginate(-1);
+            }}
+          />
+        </AnimatePresence>
+
+        {/* === ГРАДИЕНТ === */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+
+        {/* === ТЕКСТ === */}
+        <motion.div
+          key={slides[currentSlide].title}
+          className="relative z-10 w-full px-4 pb-[12vh]"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: easing }}
+        >
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+            {slides[currentSlide].title}
+          </h1>
+          <p className="text-white/80 text-base md:text-lg">
+            {slides[currentSlide].subtitle}
+          </p>
+        </motion.div>
+
+        {/* === ТОЧКИ === */}
+        <div
+          className="
+            absolute 
+            bottom-[max(3.5rem,env(safe-area-inset-bottom,1rem))]
+            sm:bottom-[max(2.5rem,env(safe-area-inset-bottom,1rem))]
+            md:bottom-[max(1.5rem,env(safe-area-inset-bottom,0.5rem))]
+            left-1/2 -translate-x-1/2 
+            flex gap-3 z-20
+            bg-black/30 backdrop-blur-md rounded-full px-4 py-2
+            shadow-lg border border-white/10
+          "
+        >
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage([i, 0])}
+              className={`w-3.5 h-3.5 rounded-full transition-all duration-300 ${
+                i === currentSlide
+                  ? "bg-amber-400 scale-125 shadow-md"
+                  : "bg-white/70 hover:bg-amber-300"
+              }`}
+            />
+          ))}
+        </div>
+      </>
+    );
+  })()}
 </motion.section>
 
 
@@ -226,531 +386,725 @@ export default function Landing() {
 
 
 
-    {/* === HERO (мобильная версия) — c анимированным “светом” и поочерёдными появлениями === */}
-      <motion.section
-        id="home"
-        className="flex md:hidden flex-col items-center justify-center w-full bg-white text-center min-h-screen p-0 m-0"
-        variants={staggerContainer} // 🔹 NEW
-        initial="hidden"            // 🔹 NEW
-        animate="visible"           // 🔹 NEW
+{/* === 2️⃣ ДИНАМИЧЕСКИЙ БЛОК (адаптивный и сбалансированный) === */}
+<motion.section
+  id="modes"
+  className="
+    relative w-full flex flex-col lg:flex-row 
+    items-center justify-center 
+    snap-start overflow-hidden 
+    px-6 sm:px-10 md:px-16 lg:px-20
+    transition-all duration-700
+    lg:px-[8vw] xl:px-[10vw] 2xl:px-[12vw]
+  "
+  style={{
+    minHeight: "100dvh",
+    paddingTop: "calc(env(safe-area-inset-top, 16px) + 5rem)",
+    paddingBottom: "calc(env(safe-area-inset-bottom, 16px) + 1.5rem)",
+    background: `
+      radial-gradient(
+        circle at 70% 50%, 
+        rgba(255, 245, 215, 0.9) 0%, 
+        ${activeMode.color} 40%, 
+        #f7efdc 70%, 
+        #ede2cf 100%
+      ),
+      linear-gradient(to bottom, #fff8e6 0%, #f8f3e3 60%, #f3ecda 100%)
+    `,
+  }}
+  variants={staggerContainer}
+  initial="hidden"
+  animate="visible"
+>
+  {/* === "Дыхание света" (мягкая анимация) === */}
+  <motion.div
+    className="absolute inset-0 pointer-events-none"
+    style={{
+      background:
+        "radial-gradient(circle at 75% 40%, rgba(255,230,150,0.25) 0%, transparent 70%)",
+    }}
+    animate={{
+      opacity: [0.25, 0.45, 0.25],
+      scale: [1, 1.02, 1],
+    }}
+    transition={{
+      duration: 10,
+      repeat: Infinity,
+      ease: "easeInOut",
+    }}
+  />
+
+  {/* === Контентная область === */}
+  <div className="max-w-7xl w-full flex flex-col lg:flex-row items-center justify-center gap-10 md:gap-20 relative z-10">
+    {/* === Левая часть (текст + кнопки) === */}
+    <div className="
+      flex-1 flex flex-col items-center lg:items-start 
+      text-center lg:text-left justify-center
+      max-w-[480px] lg:max-w-[520px]
+      order-1 lg:order-none
+    ">
+      <motion.h1
+        initial="visible"
+        variants={fadeInUp}
+        className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 leading-snug mb-4 md:mb-6"
       >
-        {/* Текст */}
-        <motion.h1
-      
-          className="text-3xl font-bold text-neutral-900 leading-snug px-4"
-        >
-          Искусственное окно —{" "}
-          <span className="text-amber-500">свет, который живёт по вашим ритмам</span>.
-        </motion.h1>
+        Искусственное окно —{" "}
+        <span className="text-amber-500">
+          свет, который живёт по вашим ритмам
+        </span>
+        .
+      </motion.h1>
 
-        {/* Изображение окна + мягкое “дыхание света” */}
-        <motion.div
-          variants={fadeIn} // 🔹 NEW
-          className="relative w-[260px] h-[380px] flex items-center justify-center my-0"
-        >
-          {/* Световой ореол дышит медленно */}
-          <motion.div
-            className="absolute inset-0 rounded-3xl blur-[60px] opacity-40 animate-pulse-slow"
-            style={{ backgroundColor: activeMode.color }}
-            aria-hidden
-          />
-          <img
-            src={activeMode.image}
-            alt="Искусственное окно"
-            className="relative z-10 w-full h-auto object-contain drop-shadow-2xl m-0"
-          />
-        </motion.div>
-
-        {/* Переключатели режимов */}
-        <motion.div variants={fadeInUp} className="flex gap-3 mt-2 mb-4">
-          {modes.map((mode) => (
-            <button
-              key={mode.name}
-              onClick={() => setActiveMode(mode)}
-              className={`px-5 py-1.5 rounded-full text-sm font-medium border transition-all ${
-                activeMode.name === mode.name
-                  ? "bg-black text-white border-black"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-              }`}
-            >
-              {mode.name}
-            </button>
-          ))}
-        </motion.div>
-
-        <motion.p
-          variants={fadeInUp}
-          className="text-neutral-700 text-base mb-6 max-w-sm px-4"
-        >
-          Естественный свет и комфорт даже там, где нет окон. Управляйте светом, который подстраивается под вас.
-        </motion.p>
-
-        {/* Кнопки */}
-        <motion.div
-          variants={fadeInUp}
-          className="flex flex-col gap-3 w-full max-w-xs mb-4"
-        >
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-amber-400 hover:bg-amber-500 text-black font-medium py-3 rounded-xl shadow-md transition"
-          >
-            Почувствуй свет солнца →
-          </button>
-          <button
-            onClick={() =>
-              document.getElementById("benefits")?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="border border-gray-400 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-50 transition"
-          >
-            Подробнее
-          </button>
-        </motion.div>
-      </motion.section>
-
-            
-      {/* === HERO (десктоп) — поочерёдные появления + “дышащий” свет за окном === */}
-      <motion.section
-        id="home"
-        className="hidden md:flex flex-row items-center justify-between max-w-7xl w-full px-10 py-20 mx-auto"
-        variants={staggerContainer} // 🔹 NEW
-        initial="hidden"            // 🔹 NEW
-        whileInView="visible"       // 🔹 NEW (появление при прокрутке)
-        viewport={{ once: true, amount: 0.4 }} // 🔹 NEW
+      <motion.p
+        initial="visible"
+        variants={fadeInUp}
+        className="text-neutral-700 text-base md:text-lg mb-2 md:mb-4 max-w-md"
       >
-        {/* Текст */}
-        <div className="flex-1 space-y-6 max-w-xl">
-          <motion.h1 variants={fadeInUp} className="text-6xl font-bold text-neutral-900 leading-tight">
-            Искусственное окно —{" "}
-            <span className="text-amber-500">свет, который живёт по вашим ритмам.</span>
-          </motion.h1>
+        Естественный свет и комфорт даже там, где нет окон. Управляйте светом,
+        который подстраивается под вас.
+      </motion.p>
 
-          <motion.p variants={fadeInUp} className="text-neutral-700 text-lg max-w-md">
-            Естественный свет, динамика суток и спокойствие — даже там, где нет окон.
-            Интеллектуальное устройство, которое имитирует естественный солнечный цикл.
-          </motion.p>
+      {/* === Окно для мобильных === */}
+      <motion.div
+        variants={fadeInUp}
+        initial="visible"
+        className="
+          relative flex items-center justify-center my-6 lg:hidden 
+          w-[240px] h-[340px]
+          sm:w-[280px] sm:h-[400px]
+          max-h-[55vh] sm:max-h-[60vh]
+          transition-all duration-300
+        "
+      >
+        <motion.div
+          className="absolute inset-0 rounded-3xl blur-[100px] opacity-50 animate-pulse-slow"
+          style={{ backgroundColor: activeMode.color }}
+          aria-hidden
+        />
+        <img
+          src={activeMode.image}
+          alt="Искусственное окно"
+          className="relative z-10 w-full h-auto object-contain drop-shadow-[10px_10px_40px_rgba(0,0,0,0.15)]"
+        />
+      </motion.div>
 
-          <motion.div variants={fadeInUp} className="flex gap-4 mt-6">
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-amber-400 hover:bg-amber-500 text-black font-medium py-3 px-6 rounded-xl shadow-md transition"
-            >
-              Почувствуй свет солнца →
-            </button>
+      {/* === Переключатели === */}
+      <motion.div
+        initial="visible"
+        variants={fadeInUp}
+        className="flex gap-3 mb-5 md:mb-6 flex-wrap justify-center lg:justify-start"
+      >
+        {modes.map((mode) => (
+          <button
+            key={mode.name}
+            onClick={() => setActiveMode(mode)}
+            className={`px-5 py-1.5 rounded-full text-sm font-medium border transition-all ${
+              activeMode.name === mode.name
+                ? "bg-black text-white border-black shadow-sm"
+                : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+            }`}
+          >
+            {mode.name}
+          </button>
+        ))}
+      </motion.div>
 
-            <button
-              onClick={() =>
-                document.getElementById("benefits")?.scrollIntoView({ behavior: "smooth" })
-              }
-              className="border border-gray-400 text-gray-700 font-medium py-3 px-6 rounded-xl hover:bg-gray-50 transition"
-            >
-              Подробнее
-            </button>
-          </motion.div>
+      {/* === Кнопки действий === */}
+      <motion.div
+        initial="visible"
+        variants={fadeInUp}
+        className="flex flex-col md:flex-row gap-3 w-full max-w-xs md:max-w-none md:w-auto justify-center lg:justify-start pb-[env(safe-area-inset-bottom)]"
+      >
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-amber-400 hover:bg-amber-500 text-black font-medium py-3 px-8 rounded-xl shadow-md transition w-full md:w-auto"
+        >
+          Почувствуй свет солнца
+        </button>
+        <button
+          onClick={() =>
+            document
+              .getElementById("benefits")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+          className="border border-gray-400 text-gray-700 font-medium py-3 px-8 rounded-xl hover:bg-gray-50 transition w-full md:w-auto"
+        >
+          Подробнее
+        </button>
+      </motion.div>
+    </div>
 
-          <motion.div variants={fadeInUp} className="flex gap-3 mt-8">
-            {modes.map((mode) => (
-              <button
-                key={mode.name}
-                onClick={() => setActiveMode(mode)}
-                className={`px-6 py-2 rounded-full text-sm font-medium border transition-all ${
-                  activeMode.name === mode.name
-                    ? "bg-black text-white border-black"
-                    : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
-                }`}
-              >
-                {mode.name}
-              </button>
-            ))}
-          </motion.div>
+    {/* === Правая часть (окно для десктопа) === */}
+    <motion.div
+      variants={fadeInUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      className="hidden lg:flex flex-1 items-center justify-center relative"
+    >
+      <div className="relative w-[360px] sm:w-[420px] lg:w-[450px] h-auto max-h-[70vh] flex items-center justify-center">
+        <motion.div
+          className="absolute inset-0 rounded-3xl blur-[120px] opacity-40"
+          style={{ backgroundColor: activeMode.color }}
+          animate={{
+            opacity: [0.3, 0.55, 0.3],
+            scale: [1, 1.03, 1],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          aria-hidden
+        />
+        <img
+          src={activeMode.image}
+          alt="Искусственное окно"
+          className="relative z-10 w-full h-auto object-contain drop-shadow-[20px_20px_50px_rgba(0,0,0,0.2)]"
+        />
+      </div>
+    </motion.div>
+  </div>
+</motion.section>
+
+
+
+
+
+
+
+
+
+
+
+        {/* === 3️⃣ УНИКАЛЬНОСТЬ === */}
+        <SectionBenefits />
+
+        {/* === 4️⃣ СПЕКТР === */}
+        <SectionSpectrum />
+
+        {/* === 5️⃣ ПРИМЕНЕНИЕ === */}
+        <SectionPlaces />
+
+        {/* === 6️⃣ CTA === */}
+        <SectionCTA
+  onClick={() => setShowModal(true)}
+  phone={phone}
+  handlePhoneChange={handlePhoneChange}
+/>
+
+{/* === Глобальное модальное окно === */}
+<ModalOrder
+  show={showModal}
+  onClose={() => setShowModal(false)}
+  phone={phone}
+  handlePhoneChange={handlePhoneChange}
+/>
+
+      </motion.div>
+    </div>
+  );
+}
+
+/* ==== Подсекции (вынесены для чистоты) ==== */
+
+function SectionBenefits() {
+  return (
+    <section
+      id="benefits"
+      className="
+        relative 
+        w-full 
+        min-h-[100dvh] 
+        flex flex-col items-center justify-center
+        text-center 
+        px-3 md:px-6 
+        py-[calc(env(safe-area-inset-top)+3.5rem)] 
+        md:py-20
+        snap-start overflow-hidden
+        
+      "
+      style={{
+        backgroundImage: `url(${sky})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "scroll",
+      }}
+    >
+      <div className="
+        relative z-10 
+        w-full max-w-5xl 
+        flex flex-col items-center justify-center 
+        h-full 
+        md:justify-center md:gap-8
+      ">
+        
+        {/* === Заголовок === */}
+        <h2 className="text-2xl sm:text-4xl font-bold text-neutral-900 mb-3 sm:mb-6 leading-snug">
+          Что делает Искусственное окно уникальным
+        </h2>
+
+        {/* === Верхняя карточка (ширина = нижним карточкам) === */}
+        <div className="text-center mb-8 max-w-3xl mx-auto">
+          <h3 className="text-[18px] sm:text-2xl font-bold text-amber-600 mb-2 sm:mb-3 leading-snug">
+            Свет, приближённый к настоящему солнцу.
+          </h3>
+         
+          <p className="text-[14px] sm:text-lg text-neutral-800 leading-snug max-w-2xl mx-auto">
+            Благодаря многоканальной LED-матрице искусственное{" "}
+            окно формирует <strong className="text-amber-600">сбалансированный спектр</strong>{" "}
+            без синего пика и с высоким индексом цветопередачи (CRI 90+), обеспечивая естественное восприятие и комфорт для глаз.
+          </p>
         </div>
 
-        {/* Фото окна */}
-        <motion.div variants={fadeIn} className="flex-1 flex justify-center relative">
-          <div className="relative w-[450px] h-[820px] flex items-center justify-center">
-            {/* “Дышащий” ореол */}
-            <motion.div
-              className="absolute inset-0 blur-[100px] opacity-40 rounded-3xl"
-              style={{ backgroundColor: activeMode.color }}
-              animate={{ scale: [1, 1.03, 1], opacity: [0.35, 0.5, 0.35] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              aria-hidden
-            />
-            <img
-              src={activeMode.image}
-              alt="Искусственное окно"
-              className="relative z-10 transition-all duration-700 drop-shadow-2xl"
-            />
-          </div>
-        </motion.div>
-      </motion.section>
-
-
-
-      {/* === БЛОК: Почему обычный свет вреден === */}
-<section
-  id="benefits"
-  className="relative w-full py-24 text-neutral-900 overflow-hidden"
+        {/* === Контейнер карточек === */}
+<div
+  className="
+    flex flex-col md:grid md:grid-cols-3 
+    gap-3 sm:gap-8 
+    w-full max-w-5xl
+    flex-1
+  "
 >
-  {/* Фоновый градиент — мягкий переход */}
-  <div
-    className="absolute inset-0 -z-10"
-    style={{
-      background:
-        "linear-gradient(to bottom, rgba(255,255,255,0.8) 0%, rgba(250,240,220,0.7) 100%)",
-    }}
-  ></div>
+  <FlipCard
+    title="Естественный свет"
+    frontNote="Плавный переход от рассвета до заката."
+    backText="Высокий индекс цветопередачи CRI 90+ и регулировка 3000–5700 K создают свет, максимально близкий к солнечному."
+    icon={<SunMedium className="w-9 h-9 sm:w-14 sm:h-14 text-amber-500" strokeWidth={1.75} />}
+  />
+  <FlipCard
+    title="Интеллект внутри"
+    frontNote="Автономная работа и энергоэффективность."
+    backText="Контроллер ESP32 управляет каналами света и регулирует спектр автоматически."
+    icon={<Cpu className="w-9 h-9 sm:w-14 sm:h-14 text-amber-500" strokeWidth={1.75} />}
+  />
+  <FlipCard
+    title="Комфорт и контроль"
+    frontNote="С телефона или автоматически."
+    backText="Приложение, расписание и режимы дня — всё под контролем."
+    icon={<Smartphone className="w-9 h-9 sm:w-14 sm:h-14 text-amber-500" strokeWidth={1.75} />}
+  />
+</div>
 
-  {/* Световой ореол для глубины */}
-  <div
-    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] rounded-full blur-[200px] opacity-40 -z-10"
-    style={{
-      background:
-        "radial-gradient(circle, rgba(255,220,130,0.4) 0%, transparent 70%)",
-    }}
-  ></div>
 
-  <div className="max-w-6xl mx-auto px-6 text-center md:text-left relative z-10">
-    <h2 className="text-4xl md:text-5xl font-bold text-center mb-8 leading-tight">
-      Почему обычный свет <span className="text-amber-600">вреден</span> для зрения и сна
-    </h2>
-
-    <p className="text-lg text-neutral-700 mb-12 text-center leading-relaxed max-w-3xl mx-auto">
-      Большинство источников света используют <strong className="text-amber-600">синий кристалл (440–460 нм)</strong>,
-      создающий выраженный “синий пик” в спектре.  
-      Такое излучение вызывает фотохимическое повреждение сетчатки, подавляет выработку мелатонина  
-      и нарушает циркадные ритмы — особенно у <strong>детей</strong> и <strong>пожилых</strong>.
-    </p>
-
-    {/* === Сравнение спектров === */}
-    <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-      {/* — левая карточка — обычные диоды */}
-      <div className="group bg-white/70 backdrop-blur-lg rounded-3xl shadow-lg p-8 transition-transform hover:-translate-y-2 hover:shadow-2xl">
-        <h3 className="text-xl font-semibold mb-4 text-red-600 text-center">
-          Обычные диоды
-        </h3>
-        <img
-          src={spectrumHarmful}
-          alt="Спектр обычных диодов"
-          className="rounded-lg shadow-md mx-auto w-full max-w-md transition-all group-hover:scale-[1.02]"
-        />
-        <p className="mt-4 text-sm text-neutral-600 text-center">
-          Резкий синий пик (440–460 нм) усиливает усталость глаз и мешает нормальному сну.
-        </p>
       </div>
 
-      {/* — правая карточка — Искусственное окно */}
-      <div className="group bg-white/80 backdrop-blur-lg rounded-3xl shadow-lg p-8 transition-transform hover:-translate-y-2 hover:shadow-2xl">
-        <h3 className="text-xl font-semibold mb-4 text-green-600 text-center">
-          Искусственное окно
-        </h3>
-        <img
-          src={spectrumSafe}
-          alt="Безопасный спектр Искусственного окна"
-          className="rounded-lg shadow-md mx-auto w-full max-w-md transition-all group-hover:scale-[1.02]"
-        />
-        <p className="mt-4 text-sm text-neutral-600 text-center">
-          Cпектр без синего пика — безопасен для глаз, сна и настроения.  
-          Максимально близок к солнечному.
-        </p>
-      </div>
-    </div>
 
-    {/* === Преимущество (жёлтый блок) === */}
-    <div className="relative bg-gradient-to-br from-amber-100/70 to-white/60 backdrop-blur-md border border-amber-200 rounded-3xl p-10 shadow-inner mx-auto max-w-5xl">
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-amber-400 rounded-full blur-[40px] opacity-30"></div>
-      <h3 className="text-2xl md:text-3xl font-bold text-amber-700 mb-4 text-center">
-        🌤 Свет, как у солнца — без вреда, с пользой
-      </h3>
-      <p className="text-lg text-neutral-700 leading-relaxed max-w-3xl mx-auto text-center">
-        Искусственное окно создаёт <strong className="text-amber-700">естественный солнечный спектр</strong> —  
-        сбалансированный, без синего пика и с высоким индексом цветопередачи (CRI 90+).  
-        Такой свет улучшает концентрацию, снижает стресс и поддерживает здоровые биоритмы.
-      </p>
-    </div>
+    </section>
+  );
+}
 
-    {/* === Источники === */}
-    <div className="mt-16 space-y-6 text-left max-w-3xl mx-auto">
-      <blockquote className="border-l-4 border-amber-400 pl-6 italic text-neutral-700">
-        “Синий свет (440–460 нм) вызывает окислительный стресс, повреждение фоторецепторов
-        и ускоряет возрастные изменения сетчатки.”
-        <br />
-        <span className="not-italic text-sm text-gray-500">
-          — Tosini et al., *Nature Aging Mechanisms*, 2024
-        </span>
-      </blockquote>
+function SectionSpectrum() {
+  const [expanded, setExpanded] = useState<string | null>(null);
 
-      <blockquote className="border-l-4 border-amber-400 pl-6 italic text-neutral-700">
-        “Синий свет подавляет выработку мелатонина в два раза сильнее зелёного, нарушая сон
-        и циркадные ритмы человека.”
-        <br />
-        <span className="not-italic text-sm text-gray-500">
-          — Harvard Health Publishing, 2018
-        </span>
-      </blockquote>
+  const toggleExpand = (id: string | null) => {
+    setExpanded(id === expanded ? null : id);
+  };
 
-      <blockquote className="border-l-4 border-amber-400 pl-6 italic text-neutral-700">
-        “Хроническое воздействие коротковолнового света связано с развитием макулярной
-        дегенерации и зрительной усталости.”
-        <br />
-        <span className="not-italic text-sm text-gray-500">
-          — Framingham Eye Study, 2021
-        </span>
-      </blockquote>
-    </div>
-  </div>
-</section>
+  const cards = [
+    {
+      id: "harmful",
+      title: "Обычные источники",
+      img: spectrumHarmful,
+      text: (
+        <>
+          <strong className="text-sky-600">Синий пик</strong> усиливает
+          усталость и мешает сну.
+        </>
+      ),
+    },
+    {
+      id: "safe",
+      title: "Искусственное окно",
+      img: spectrumSafe,
+      text: (
+        <>
+          Без синего пика — безопасно для глаз и сна, близко к
+          естественному солнечному свету.
+        </>
+      ),
+    },
+  ];
 
-
-     {/* === УНИКАЛЬНОСТЬ === */}
-<section className="py-20 px-6 bg-neutral-50 w-full text-center">
-  <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-12">
-    Что делает Искусственное окно уникальным
-  </h2>
-
-  <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-    {[
-      {
-        title: "Естественный свет",
-        frontNote: "Плавный переход от рассвета до заката.",
-        backText:
-          "Высокий индекс цветопередачи CRI 90+ и динамическая регулировка цветовой температуры от 3000K до 5700K создают свет, максимально близкий к солнечному.",
-        image: lightIcon,
-      },
-      {
-        title: "Интеллект внутри",
-        frontNote: "Полностью автономная работа и энергоэффективность.",
-        backText:
-          "Контроллер на базе ESP32 управляет всеми каналами света, обеспечивает автоматические режимы и настройку расписания. Встроенный датчик присутствия человека экономит энергию.",
-        image: chipIcon,
-      },
-      {
-        title: "Управление и комфорт",
-        frontNote: "Всё под контролем — с телефона или автоматически.",
-        backText:
-          "Удобное мобильное приложение позволяет настраивать освещение, выбирать режимы дня, управлять яркостью и температурой.",
-        image: phoneIcon,
-      },
-    ].map((card, index) => (
-      <FlipCard key={index} {...card} />
-    ))}
-  </div>
-</section>
-
-
-
-      {/* Где особенно полезно */}
-<section id="places" className="py-20 w-full bg-white">
-  <h2 className="text-4xl font-semibold text-center text-neutral-900 mb-16 px-4">
-    Где Искусственное окно особенно полезно
-  </h2>
-
-  {/* ===== Дом ===== */}
-  <div className="max-w-5xl mx-auto">
-    <div className="mb-8">
-  <h3 className="text-2xl font-semibold text-amber-700 text-center">Дом</h3>
-  <div className="w-10 h-[2px] bg-amber-500 mx-auto mt-2 rounded-full"></div>
-</div>
-
-    <div className="max-w-3xl mx-auto text-neutral-800 leading-relaxed space-y-5">
-      <p className="text-xl font-semibold text-neutral-900 text-center">
-        Просыпайтесь с рассветом и засыпайте в мягком вечернем свете.
-      </p>
-
-      <p className="text-[17px] text-center">
-        Искусственное окно наполняет комнату естественным сиянием, меняя оттенок света в течение дня —
-        от бодрящего утреннего до тёплого вечернего. Оно бережно гаснет, когда вы уходите,
-        создавая ощущение живого солнца у вас дома.
-      </p>
-
-      <p className="text-[17px] text-center">
-        Идеально для <strong>спальни, гостиной и детской</strong> — там, где важны уют,
-        мягкий свет и естественный ритм дня.
-      </p>
-      <br></br>
-    </div>
-
-
-
-    {/* галерея */}
-    <div className="hidden md:grid grid-cols-3 gap-6 px-4">
-      {[room1, room2, room3].map((src, i) => (
-        <img
-          key={i}
-          src={src}
-          alt="Домашний интерьер с Искусственным окном"
-          className="rounded-2xl h-[600px] w-full object-cover shadow-lg hover:scale-105 transition-transform"
-        />
-      ))}
-    </div>
-
-    {/* mobile scroll — центрирование изображений */}
-<div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
-  {/* Пустой отступ слева для центрирования первого изображения */}
-  <div className="shrink-0 w-[calc(50vw-10rem)]" />
-
-  { [room1, room2, room3].map((src, i) => (
-    <img
-      key={i}
-      src={src}
-      alt=""
-      className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
-    />
-  ))}
-
-  {/* Пустой отступ справа для центрирования последнего изображения */}
-  <div className="shrink-0 w-[calc(50vw-10rem)]" />
-</div>
-
-  </div>
-
-   {/* ===== ОФИСЫ ===== */}
-<div className="max-w-5xl mx-auto mt-24">
-  <div className="mb-8 text-center">
-    <h3 className="text-2xl font-semibold text-amber-700">Офисы</h3>
-    <div className="w-10 h-[2px] bg-amber-500 mx-auto mt-2 rounded-full"></div>
-  </div>
-
-  <div className="max-w-3xl mx-auto text-neutral-800 leading-relaxed space-y-5 text-center">
-    <p className="text-xl font-semibold text-neutral-900">
-      Искусственное окно делает офис светлее, продуктивнее и комфортнее.
-    </p>
-
-    <p className="text-[17px]">
-      Свет без мерцания и бликов снижает усталость глаз и устраняет ощущение замкнутого пространства.
-      В переговорных, open space и домашних кабинетах появляется естественное ощущение дня.
-    </p>
-
-    <p className="text-[17px]">
-      Естественный свет — даже без окон: устройства устанавливаются вдоль рабочих зон,
-      создавая эффект настоящих окон. Контроллер автоматически регулирует цветовую температуру и яркость.
-    </p>
-
-    <p className="text-[17px]">
-      <strong>Результат —</strong> команда работает дольше без усталости, а пространство выглядит современно и живо.
-    </p>
-    <br></br>
-  </div>
-
-    <div className="hidden md:grid grid-cols-3 gap-6 px-4">
-      {[office1, office2, office3].map((src, i) => (
-        <img
-          key={i}
-          src={src}
-          alt="Офисное пространство с Искусственным окном"
-          className="rounded-2xl h-[600px] w-full object-cover shadow-lg hover:scale-105 transition-transform"
-        />
-      ))}
-    </div>
-
-    {/* mobile scroll — центрирование изображений */}
-<div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
-  {/* Пустой отступ слева для центрирования первого изображения */}
-  <div className="shrink-0 w-[calc(50vw-10rem)]" />
-
-  { [office1, office2, office3].map((src, i) => (
-    <img
-      key={i}
-      src={src}
-      alt=""
-      className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
-    />
-  ))}
-
-  {/* Пустой отступ справа для центрирования последнего изображения */}
-  <div className="shrink-0 w-[calc(50vw-10rem)]" />
-</div>
-
-  </div>
-
-  {/* ===== ОБРАЗОВАТЕЛЬНЫЕ УЧРЕЖДЕНИЯ ===== */}
-<div className="max-w-5xl mx-auto mt-24">
-  <div className="mb-8 text-center">
-    <h3 className="text-2xl font-semibold text-amber-700">Образовательные учреждения</h3>
-    <div className="w-10 h-[2px] bg-amber-500 mx-auto mt-2 rounded-full"></div>
-  </div>
-
-  <div className="max-w-3xl mx-auto text-neutral-800 leading-relaxed space-y-5 text-center">
-    <p className="text-xl font-semibold text-neutral-900">
-      Искусственное окно создаёт здоровую световую среду для обучения и отдыха.
-    </p>
-
-    <p className="text-[17px]">
-      В детских садах, школах и университетах оно помогает сохранять концентрацию днём
-      и плавно снижает активность к вечеру. Безопасный спектр без синего пика бережно защищает зрение детей
-      и поддерживает естественные биоритмы.
-    </p>
-
-    <p className="text-[17px]">
-      <strong>Результат —</strong> комфортное пространство, где детям легче учиться,
-      меньше устают глаза и сохраняется гармоничный ритм дня.
-    </p>
-    <br></br>
-  </div>
-
-    <div className="hidden md:grid grid-cols-3 gap-6 px-4">
-      {[kids1, kids2, kids3].map((src, i) => (
-        <img
-          key={i}
-          src={src}
-          alt="Класс или детская комната с Искусственным окном"
-          className="rounded-2xl h-[600px] w-full object-cover shadow-lg hover:scale-105 transition-transform"
-        />
-      ))}
-    </div>
-
-    {/* mobile scroll — центрирование изображений */}
-<div className="md:hidden overflow-x-auto flex gap-4 px-4 pb-4 snap-x snap-mandatory scroll-smooth">
-  {/* Пустой отступ слева для центрирования первого изображения */}
-  <div className="shrink-0 w-[calc(50vw-10rem)]" />
-
-  { [kids1, kids2, kids3].map((src, i) => (
-    <img
-      key={i}
-      src={src}
-      alt=""
-      className="snap-center shrink-0 w-80 h-[260px] object-cover rounded-2xl shadow-md"
-    />
-  ))}
-
-  {/* Пустой отступ справа для центрирования последнего изображения */}
-  <div className="shrink-0 w-[calc(50vw-10rem)]" />
-</div>
-</div>
-
-</section>
-
-
-      {/* Финальный CTA */}
-      <section id="order" className="py-24 bg-amber-50 w-full text-center">
-        <h2 className="text-4xl font-bold text-neutral-900 mb-6">
-          Почувствуйте солнце, даже без окон
+  return (
+    <section
+      id="why"
+      className="
+        relative 
+        w-full 
+        snap-start
+        flex flex-col items-center 
+        text-center px-6
+        h-auto md:h-screen
+        md:justify-center
+        overflow-visible
+        pt-[calc(env(safe-area-inset-top)+3.5rem)]
+        pb-[calc(env(safe-area-inset-bottom)+2.5rem)]
+      "
+      style={{
+        background:
+          "radial-gradient(circle at 35% 40%, rgba(90,160,255,0.25), rgba(255,255,255,1) 80%)",
+      }}
+    >
+      <div className="max-w-6xl w-full flex flex-col items-center md:justify-center md:h-full">
+        {/* === Заголовок === */}
+        <h2 className="text-2xl sm:text-4xl font-semibold mb-6 text-neutral-900">
+          Почему обычное искусственное освещение вредно
         </h2>
-        <p className="text-lg text-neutral-700 mb-10">
-          Искусственное окно — ваш личный источник естественного света.  
-          Поддержка здоровья, спокойствия и настроения каждый день.
+
+        {/* === Описание === */}
+        <p className="text-base sm:text-lg text-neutral-700 mb-10 text-center leading-relaxed max-w-3xl mx-auto">
+          Большинство источников света используют{" "}
+          <strong className="text-sky-600">синий кристалл (440–460 нм)</strong>,
+          создающий выраженный “синий пик” в спектре. Такое излучение вызывает
+          фотохимическое повреждение сетчатки, подавляет выработку мелатонина и
+          нарушает циркадные ритмы — особенно у{" "}
+          <strong className="text-sky-700">детей</strong> и{" "}
+          <strong className="text-sky-700">пожилых</strong>.
         </p>
-        <button onClick={() => setShowModal(true)} className="bg-amber-400 hover:bg-amber-500 text-black font-semibold py-4 px-10 rounded-xl shadow-md transition text-lg">
-          Почувствуй свет солнца →
-        </button>
 
-      </section>
-      {/* ===== FOOTER ===== */}
-<footer className="bg-neutral-900 text-white py-16">
-  <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
+        {/* === Карточки спектров === */}
+        <div
+          className="
+            flex flex-row flex-wrap justify-center items-start
+            gap-6 sm:gap-10
+            w-full max-w-6xl mb-10
+          "
+        >
+          {cards.map((card) => (
+            <div
+              key={card.id}
+              onClick={() => toggleExpand(card.id)}
+              className="
+                flex flex-col items-center text-center flex-1 
+                min-w-[140px] max-w-[180px] md:max-w-[400px]
+                transition-transform duration-300 
+                active:scale-95
+                cursor-pointer md:cursor-default
+                p-3 sm:p-4
+              "
+            >
+              <h3 className="text-sm sm:text-base font-semibold mb-3 text-neutral-800">
+                {card.title}
+              </h3>
+              <img
+                src={card.img}
+                alt={card.title}
+                className="
+                  w-[130px] sm:w-[250px] md:w-[380px]
+                  object-contain mix-blend-multiply 
+                  drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)]
+                  transition-transform duration-300
+                  md:hover:scale-100
+                "
+              />
+              <p className="mt-3 text-xs sm:text-sm text-neutral-700 max-w-sm">
+                {card.text}
+              </p>
+            </div>
+          ))}
+        </div>
+          
+        {/* === Цитаты === */}
+        <div className="space-y-5 text-left max-w-3xl mx-auto text-neutral-700 leading-snug text-[13px] sm:text-base">
+          <blockquote className="border-l-4 border-amber-400 pl-4 italic">
+            “Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет
+            возрастные изменения сетчатки.”
+            <br />
+            <span className="not-italic text-[11px] sm:text-sm text-gray-500">
+              — Tosini et al., *Nature Aging Mechanisms*, 2024
+            </span>
+          </blockquote>
 
-    {/* Левая колонка */}
-    <div>
-      <h3 className="text-2xl font-semibold mb-4">Искусственное окно</h3>
-      <p className="text-sm text-neutral-400">
-        Свет, который живёт по тем же законам, что и солнце.  
+          <blockquote className="border-l-4 border-amber-400 pl-4 italic">
+            “Синий свет подавляет выработку мелатонина в два раза сильнее
+            зелёного, нарушая сон и циркадные ритмы человека.”
+            <br />
+            <span className="not-italic text-[11px] sm:text-sm text-gray-500">
+              — Harvard Health Publishing, 2018
+            </span>
+          </blockquote>
+
+          <blockquote className="border-l-4 border-amber-400 pl-4 italic">
+            “Хроническое воздействие коротковолнового света связано с развитием
+            макулярной дегенерации и зрительной усталости.”
+            <br />
+            <span className="not-italic text-[11px] sm:text-sm text-gray-500">
+              — Framingham Eye Study, 2021
+            </span>
+          </blockquote>
+        </div>
+      </div>
+
+      {/* === Раскрытая карточка (мобильная версия) === */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            key="expanded"
+            className="fixed inset-0 z-[999] flex items-center justify-center md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => toggleExpand(null)}
+            style={{
+              background:
+                "radial-gradient(circle at 35% 40%, rgba(90,160,255,0.25), rgba(255,255,255,1) 80%)",
+            }}
+          >
+            <motion.div
+              className="
+                bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl
+                border border-white/60
+                flex flex-col items-center text-center p-6 mx-4
+                max-w-[90vw]
+              "
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 160, damping: 18 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {cards
+                .filter((c) => c.id === expanded)
+                .map((card) => (
+                  <div key={card.id}>
+                    <h3 className="text-lg font-semibold mb-3 text-neutral-800">
+                      {card.title}
+                    </h3>
+                    <img
+                      src={card.img}
+                      alt={card.title}
+                      className="w-[85vw] max-w-[500px] object-contain mix-blend-multiply drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
+                    />
+                    <p className="mt-4 text-sm text-neutral-700">{card.text}</p>
+                  </div>
+                ))}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+
+
+
+
+
+function SectionPlaces() {
+  return (
+    <section id="places" className="w-full snap-start">
+      <FullImageBlock
+        image={room2}
+        title="Дом"
+        text={
+          <div className="bg-white/15 text-neutral-800backdrop-blur-[3px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+            <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
+              Просыпайтесь с рассветом и засыпайте в мягком вечернем свете.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+              Искусственное окно наполняет комнату естественным сиянием, меняя оттенок света в течение дня — 
+              от бодрящего утреннего до тёплого вечернего. Оно бережно гаснет, когда вы уходите, 
+              создавая ощущение живого солнца у вас дома.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center leading-relaxed">
+              Идеально для <strong>спальни, гостиной и детской</strong> — там, где важны уют, 
+              мягкий свет и естественный ритм дня.
+            </p>
+          </div>
+        }
+      />
+
+      <FullImageBlock
+        image={office4}
+        title="Офис"
+        text={
+          <div className="bg-white/10 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+            <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
+              Искусственное окно делает офис светлее, продуктивнее и комфортнее.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+              Свет без мерцания и бликов снижает усталость глаз и устраняет ощущение замкнутого пространства.
+              В переговорных, open space и домашних кабинетах появляется естественное ощущение дня.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+              Естественный свет — даже без окон: устройства устанавливаются вдоль рабочих зон,
+              создавая эффект настоящих окон. Контроллер автоматически регулирует цветовую температуру и яркость.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center leading-relaxed">
+              <strong>Результат —</strong> команда работает дольше без усталости, а пространство выглядит современно и живо.
+            </p>
+          </div>
+        }
+      />
+
+      <FullImageBlock
+        image={kids2}
+        title="Образовательные учреждения"
+        text={
+          <div className="bg-white/10 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+            <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
+              Искусственное окно создаёт здоровую световую среду для обучения и отдыха.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+              В детских садах, школах и университетах оно помогает сохранять концентрацию днём
+              и плавно снижает активность к вечеру. Безопасный спектр без синего пика бережно защищает зрение детей
+              и поддерживает естественные биоритмы.
+            </p>
+
+            <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
+
+            <p className="text-[17px] md:text-[20px] text-center leading-relaxed">
+              <strong>Результат —</strong> комфортное пространство, где детям легче учиться,
+              меньше устают глаза и сохраняется гармоничный ритм дня.
+            </p>
+          </div>
+        }
+      />
+    </section>
+  );
+}
+
+
+
+
+
+// ================================
+// === Основной компонент CTA ===
+// ================================
+function SectionCTA({
+  onClick,
+  phone,
+  handlePhoneChange,
+}: {
+  onClick: () => void;
+  phone: string;
+  handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  
+
+
+  return (
+    <>
+      <section
+        id="order"
+        className="snap-start w-full min-h-screen bg-amber-50 text-center flex flex-col"
+      >
+        <div className="flex flex-col justify-between flex-1">
+          {/* === CTA === */}
+          <div className="flex flex-col items-center justify-start px-6 sm:px-10 pt-20 sm:pt-24 pb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-neutral-900 mb-4 sm:mb-6 leading-snug">
+              Почувствуйте солнце, даже без окон
+            </h2>
+            <p className="text-base sm:text-lg text-neutral-700 mb-8 sm:mb-10 max-w-2xl leading-relaxed">
+              Искусственное окно — ваш личный источник естественного света.{" "}
+              <br className="hidden sm:block" />
+              Поддержка здоровья, спокойствия и настроения каждый день.
+            </p>
+            <button
+              onClick={onClick}
+              className="bg-amber-400 hover:bg-amber-500 text-black font-semibold py-3 sm:py-4 px-10 sm:px-12 rounded-xl shadow-md transition text-base sm:text-lg"
+            >
+              Почувствуй свет солнца
+            </button>
+          </div>
+
+          {/* === Форма === */}
+          <div id="contacts" className="w-full bg-amber-50 py-12 sm:py-16 px-6 sm:px-10">
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold text-neutral-900 mb-3 sm:mb-4">
+              Оставьте заявку
+            </h3>
+            <p className="text-neutral-700 mb-6 text-sm sm:text-base">
+              Мы свяжемся и подберём решение под ваше пространство.
+            </p>
+
+            <form
+              action="https://formspree.io/f/mqayljgp"
+              method="POST"
+              className="
+                mt-2
+                grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto]
+                gap-4
+                max-w-5xl w-full mx-auto
+              "
+            >
+              <input
+                name="name"
+                required
+                placeholder="Имя"
+                className="border rounded-lg p-4 text-sm sm:text-base w-full focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="Email"
+                className="border rounded-lg p-4 text-sm sm:text-base w-full focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+              <input
+                name="phone"
+                type="tel"
+                placeholder="Телефон"
+                value={phone}
+                onChange={handlePhoneChange}
+                className="border rounded-lg p-4 text-sm sm:text-base w-full focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+              <button
+                className="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg p-4 text-sm sm:text-base transition min-w-[150px]"
+              >
+                Отправить
+              </button>
+            </form>
+          </div>
+
+{/* === Футер === */}
+<footer className="bg-neutral-900 text-white py-12 sm:py-16 px-6 sm:px-8 mt-auto">
+  <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 text-left">
+    
+    {/* === Левая колонка: логотип и описание === */}
+    <div className="flex flex-col items-center md:items-start text-center md:text-left">
+      {/* Логотип */}
+      <img
+        src="/logo.png"
+        alt="Логотип Искусственное окно"
+        className="h-20 sm:h-20 w-auto mb-4 opacity-90 hover:opacity-100 transition"
+      />
+
+      <h3 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
+        Искусственное окно
+      </h3>
+
+      <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-[260px]">
+        Свет, который живёт по тем же законам, что и солнце. <br />
         Уют, здоровье и ритм природы — в каждом дне.
       </p>
     </div>
 
-    {/* Разделы */}
-    <div>
-      <h4 className="text-lg font-semibold mb-4 text-amber-400">Разделы</h4>
-      <ul className="space-y-2 text-neutral-300">
+    {/* === Средняя колонка: навигация === */}
+    <div className="text-center md:text-left">
+      <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-amber-400">
+        Разделы
+      </h4>
+      <ul className="space-y-1 sm:space-y-2 text-neutral-300 text-sm sm:text-base">
         <li>
           <a href="#home" className="hover:text-amber-400 transition">Главная</a>
         </li>
@@ -761,182 +1115,193 @@ export default function Landing() {
           <a href="#places" className="hover:text-amber-400 transition">Где полезно</a>
         </li>
         <li>
-          <a href="#order" className="hover:text-amber-400 transition" onClick={() => setShowModal(true)}>Заказать</a>
+          <button
+            onClick={onClick}
+            className="hover:text-amber-400 transition"
+          >
+            Заказать
+          </button>
         </li>
       </ul>
     </div>
 
-    {/* Контакты */}
-    <div>
-      <h4 className="text-lg font-semibold mb-4 text-amber-400">Контакты</h4>
-      <p className="text-neutral-400 text-sm leading-relaxed">
-        galihanashvili@yandex.ru <br />
+    {/* === Правая колонка: контакты === */}
+    <div className="text-center md:text-left">
+      <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-amber-400">
+        Контакты
+      </h4>
+      <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
+        info@smartwindow.ru <br />
         +7 (921) 914-11-71 <br />
         Санкт-Петербург
       </p>
     </div>
   </div>
 
-  <div className="mt-12 border-t border-neutral-800 pt-6 text-center text-neutral-500 text-sm">
+  <div className="mt-10 border-t border-neutral-800 pt-5 text-center text-neutral-500 text-xs sm:text-sm">
     © {new Date().getFullYear()} Искусственное окно. Все права защищены.
   </div>
 </footer>
 
-{/* === Модальное окно заявки === */}
-{showModal && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-    <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-xl text-center relative">
-      <button
-        onClick={() => setShowModal(false)}
-        className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 text-xl"
-      >
-        ✕
-      </button>
+        </div>
+      </section>
 
-      <h3 className="text-2xl font-bold text-amber-600 mb-2">
-        Закажите демо Искусственного окна
-      </h3>
-      <p className="text-neutral-600 mb-6 text-sm leading-relaxed">
-        Оставьте контакты — мы свяжемся с вами и подберём оптимальное решение.
-      </p>
+    </>
+  );
+}
 
-      {/* === ФОРМА FORMspree === */}
-      <form
-        action="https://formspree.io/f/mqayljgp"
-        method="POST"
-        className="space-y-4 text-left"
+
+// ================================
+// === Вспомогательные компоненты ===
+// ================================
+function ModalOrder({
+  show,
+  onClose,
+  phone,
+  handlePhoneChange,
+}: {
+  show: boolean;
+  onClose: () => void;
+  phone: string;
+  handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  if (!show) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[999]"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl p-8 sm:p-10 max-w-lg w-[90%] shadow-xl text-center relative animate-fade-in"
+        onClick={(e) => e.stopPropagation()}
       >
-        <input
-          type="text"
-          name="name"
-          placeholder="Ваше имя"
-          required
-          className="border w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-400"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Ваш e-mail"
-          required
-          className="border w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-400"
-        />
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Телефон"
-          required
-          pattern="^[+0-9\s()-]{7,20}$"
-          className="border w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-400"
-        />
-        <textarea
-          name="message"
-          placeholder="Комментарий (необязательно)"
-          rows={3}
-          className="border w-full rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-400"
-        ></textarea>
+        <h3 className="text-2xl font-semibold mb-4 text-neutral-900">Заказать демо</h3>
+        <p className="text-neutral-700 mb-6">
+          Оставьте контакты — мы свяжемся и подберём подходящее решение.
+        </p>
+
+        <form
+          action="https://formspree.io/f/mqayljgp"
+          method="POST"
+          className="flex flex-col gap-4"
+        >
+          <input
+            name="name"
+            required
+            placeholder="Имя"
+            className="border rounded-lg p-3 text-base focus:outline-none focus:ring-2 focus:ring-amber-400"
+          />
+          <input
+            name="email"
+            type="email"
+            required
+            placeholder="Email"
+            className="border rounded-lg p-3 text-base focus:outline-none focus:ring-2 focus:ring-amber-400"
+          />
+          <input
+            name="phone"
+            type="tel"
+            placeholder="Телефон"
+            value={phone}
+            onChange={handlePhoneChange}
+            className="border rounded-lg p-3 text-base focus:outline-none focus:ring-2 focus:ring-amber-400"
+          />
+          <button
+            className="bg-amber-500 hover:bg-amber-600 text-white font-medium rounded-lg p-3 text-base transition"
+          >
+            Отправить заявку
+          </button>
+        </form>
 
         <button
-          type="submit"
-          className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-6 rounded-lg w-full transition"
+          onClick={onClose}
+          className="absolute top-3 right-4 text-neutral-400 hover:text-neutral-600 text-2xl leading-none"
         >
-          Отправить заявку
+          ×
         </button>
-      </form>
-    </div>
-  </div>
-)}
-
+      </div>
     </div>
   );
 }
-/* === Компонент FlipCard === */
+
+
+
+
+
+
+
+
+/* === Вспомогательные компоненты === */
+/* === Компонент FlipCard (с переворотом и адаптивной подсказкой) === */
+
 interface FlipCardProps {
   title: string;
   frontNote: string;
   backText: string;
-  image: string;
+  icon: React.ReactNode;
 }
 
-function FlipCard({ title, frontNote, backText, image }: FlipCardProps) {
+function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
   const [flipped, setFlipped] = useState(false);
   const [showHint, setShowHint] = useState(true);
 
-  // После первого нажатия подсказка исчезает
   useEffect(() => {
     if (flipped) setShowHint(false);
   }, [flipped]);
 
   return (
     <motion.div
-      className="relative w-full h-72 perspective cursor-pointer group select-none"
       onClick={() => setFlipped(!flipped)}
-      // 👇 Bounce-анимация при появлении карточки
       initial={{ scale: 0.95, opacity: 0, y: 40 }}
       whileInView={{ scale: 1, opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{
-        type: "spring",
-        stiffness: 120,
-        damping: 12,
-        delay: 0.1,
-      }}
+      viewport={{ once: true }}
+      transition={{ type: "spring", stiffness: 120, damping: 12, delay: 0.1 }}
+      className="
+        relative w-full 
+        flex-1 max-md:flex-1 
+        cursor-pointer group select-none
+        [perspective:1000px]
+      "
     >
       <div
         className={`relative w-full h-full transition-transform duration-700 transform-style-preserve-3d ${
           flipped ? "rotate-y-180" : ""
-        } group-hover:scale-[1.03] group-hover:-rotate-x-[2deg]`}
+        }`}
       >
-        {/* Передняя сторона */}
-        <div className="absolute inset-0 bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all flex flex-col justify-between items-center backface-hidden">
-          {/* Светящийся контур */}
-          <div className="absolute inset-0 rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-amber-300/50 transition-all duration-700 pointer-events-none"></div>
+        {/* === Передняя сторона === */}
+        <div className="relative w-full h-full bg-white/40 backdrop-blur-md rounded-2xl p-5 shadow-lg flex flex-col justify-center items-center text-center backface-hidden border border-white/40">
+          <div className="rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-amber-300/40 transition-all duration-700 pointer-events-none"></div>
 
-          {/* 🔸 Подсказка (адаптивная) */}
+          <div className="flex flex-col items-center justify-center space-y-2">
+            <div className="w-10 h-10 flex items-center justify-center text-amber-500">
+              {icon}
+            </div>
+            <h3 className="text-lg font-bold text-amber-600">{title}</h3>
+            <div className="w-8 h-[2px] bg-amber-400 rounded-full"></div>
+            <p className="text-sm text-neutral-700 leading-snug px-3">
+              {frontNote}
+            </p>
+          </div>
+
           {showHint && (
             <motion.div
-              className="absolute bottom-3 right-3 flex items-center gap-1 text-amber-500 text-xs md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"
-              // 👇 На мобильных — пульсирующая подсказка
-              animate={{ opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute bottom-2 right-3 text-amber-500 text-[11px] sm:text-xs opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
             >
-              <span className="hidden md:inline">нажмите</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.75 9.75a7.5 7.5 0 1114.25 2.25"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6v6l3 3"
-                />
-              </svg>
+              нажмите ↻
             </motion.div>
           )}
-
-          {/* Контент */}
-          <img
-            src={image}
-            alt={title}
-            className="w-28 h-28 object-contain mb-4 opacity-90"
-          />
-          <h3 className="text-xl font-bold text-amber-600 mb-2">{title}</h3>
-          <p className="text-sm text-neutral-500 border-t border-amber-100 pt-3 text-center min-h-[48px] flex items-center justify-center">
-            {frontNote}
-          </p>
         </div>
 
-        {/* Задняя сторона */}
-        <div className="absolute inset-0 bg-white rounded-2xl p-8 shadow-md text-left flex flex-col justify-center rotate-y-180 backface-hidden">
-          <p className="text-base text-slate-700 leading-relaxed text-center">
+        {/* === Задняя сторона === */}
+        <div className="absolute inset-0 bg-white/50 backdrop-blur-md rounded-2xl p-6 shadow-md flex items-center justify-center rotate-y-180 backface-hidden border border-white/40">
+          <p className="text-sm sm:text-base text-neutral-800 leading-relaxed text-center px-2">
             {backText}
           </p>
         </div>
@@ -945,3 +1310,65 @@ function FlipCard({ title, frontNote, backText, image }: FlipCardProps) {
   );
 }
 
+
+
+
+
+
+function SpectrumCard({
+  title,
+  color,
+  img,
+  desc,
+}: {
+  title: string;
+  color: string;
+  img: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-3xl p-6 sm:p-8 text-center">
+      <h3 className={`text-xl font-semibold mb-4 ${color}`}>{title}</h3>
+      <div className="w-full flex justify-center">
+        <img
+          src={img}
+          alt={title}
+          className="w-full max-w-md object-contain mix-blend-multiply"
+          style={{
+            background: "transparent",
+          }}
+        />
+      </div>
+      <p className="mt-4 text-base text-neutral-700 leading-relaxed max-w-md mx-auto">
+        {desc}
+      </p>
+    </div>
+  );
+}
+
+
+
+function FullImageBlock({
+  image,
+  title,
+  text,
+}: {
+  image: string;
+  title: string;
+  text: React.ReactNode;
+}) {
+  return (
+    <div className="relative h-screen w-full snap-start overflow-hidden flex flex-col items-center justify-center text-center">
+      <img
+        src={image}
+        alt={title}
+        className="absolute inset-0 w-full h-full object-cover brightness-[0.85]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+      <div className="relative z-10 max-w-3xl px-6 text-white">
+        <h3 className="text-3xl font-semibold text-amber-400 mb-4">{title}</h3>
+        <p className="text-lg text-white/90 leading-relaxed">{text}</p>
+      </div>
+    </div>
+  );
+}
