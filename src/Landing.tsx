@@ -1003,23 +1003,23 @@ function SectionPlaces() {
         image={room2}
         title="Дом"
         text={
-          <div className="bg-black/30 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
-            <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
+          <div className="bg-black/30 backdrop-blur-md rounded-3xl px-5 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
               Просыпайтесь с рассветом и засыпайте в мягком вечернем свете.
             </p>
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
-              Искусственное окно наполняет комнату естественным сиянием, меняя оттенок света в течение дня — 
-              от бодрящего утреннего до тёплого вечернего. Оно бережно гаснет, когда вы уходите, 
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+              Искусственное окно наполняет комнату естественным сиянием, меняя оттенок света в течение дня —
+              от бодрящего утреннего до тёплого вечернего. Оно бережно гаснет, когда вы уходите,
               создавая ощущение живого солнца у вас дома.
             </p>
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center leading-relaxed">
-              Идеально для <strong>спальни, гостиной и детской</strong> — там, где важны уют, 
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center leading-relaxed">
+              Идеально для <strong>спальни, гостиной и детской</strong> — там, где важны уют,
               мягкий свет и естественный ритм дня.
             </p>
           </div>
@@ -1030,28 +1030,28 @@ function SectionPlaces() {
         image={office4}
         title="Офис"
         text={
-          <div className="bg-black/30 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
-            <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
+          <div className="bg-black/30 backdrop-blur-md rounded-3xl px-5 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
               Искусственное окно делает офис светлее, продуктивнее и комфортнее.
             </p>
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
               Свет без мерцания и бликов снижает усталость глаз и устраняет ощущение замкнутого пространства.
               В переговорных, open space и домашних кабинетах появляется естественное ощущение дня.
             </p>
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
               Естественный свет — даже без окон: устройства устанавливаются вдоль рабочих зон,
               создавая эффект настоящих окон. Контроллер автоматически регулирует цветовую температуру и яркость.
             </p>
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center leading-relaxed">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center leading-relaxed">
               <strong>Результат —</strong> команда работает дольше без усталости, а пространство выглядит современно и живо.
             </p>
           </div>
@@ -1062,14 +1062,14 @@ function SectionPlaces() {
         image={kids2}
         title="Образовательные учреждения"
         text={
-          <div className="bg-black/30 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
-            <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
+          <div className="bg-black/30 backdrop-blur-md rounded-3xl px-5 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
               Искусственное окно создаёт здоровую световую среду для обучения и отдыха.
             </p>
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center mb-4 leading-relaxed">
               В детских садах, школах и университетах оно помогает сохранять концентрацию днём
               и плавно снижает активность к вечеру. Безопасный спектр без синего пика бережно защищает зрение детей
               и поддерживает естественные биоритмы.
@@ -1077,7 +1077,7 @@ function SectionPlaces() {
 
             <div className="w-50 h-[2px] bg-amber-600 mx-auto mb-4 rounded-full opacity-60"></div>
 
-            <p className="text-[17px] md:text-[20px] text-center leading-relaxed">
+            <p className="text-[14px] sm:text-[17px] md:text-[20px] text-center leading-relaxed">
               <strong>Результат —</strong> комфортное пространство, где детям легче учиться,
               меньше устают глаза и сохраняется гармоничный ритм дня.
             </p>
@@ -1087,6 +1087,7 @@ function SectionPlaces() {
     </section>
   );
 }
+
 
 
 
