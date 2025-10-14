@@ -16,6 +16,8 @@ import window3000 from "./assets/window-3000.png";
 import window4000 from "./assets/window-4000.png";
 import window5700 from "./assets/window-5700.png";
 import sky from "./assets/sky.png";
+import led from "./assets/led.png";
+
 
 /* ---------- Анимации ---------- */
 const easing: [number, number, number, number] = [0.16, 1, 0.3, 1];
@@ -393,14 +395,16 @@ useEffect(() => {
     relative w-full flex flex-col lg:flex-row 
     items-center justify-center 
     snap-start overflow-hidden 
-    px-6 sm:px-10 md:px-16 lg:px-20
+    px-4 sm:px-8 md:px-16 lg:px-[8vw] xl:px-[10vw]
     transition-all duration-700
-    lg:px-[8vw] xl:px-[10vw] 2xl:px-[12vw]
+    gap-6 sm:gap-10 md:gap-16
+    max-[380px]:gap-4
+    max-[380px]:px-3
   "
   style={{
     minHeight: "100dvh",
-    paddingTop: "calc(env(safe-area-inset-top, 16px) + 5rem)",
-    paddingBottom: "calc(env(safe-area-inset-bottom, 16px) + 1.5rem)",
+    paddingTop: "calc(env(safe-area-inset-top, 8px) + 3rem)",
+    paddingBottom: "calc(env(safe-area-inset-bottom, 8px) + 1rem)",
     background: `
       radial-gradient(
         circle at 70% 50%, 
@@ -435,7 +439,7 @@ useEffect(() => {
   />
 
   {/* === Контентная область === */}
-  <div className="max-w-7xl w-full flex flex-col lg:flex-row items-center justify-center gap-10 md:gap-20 relative z-10">
+  <div className="max-w-7xl w-full flex flex-col lg:flex-row items-center justify-center relative z-10">
     {/* === Левая часть (текст + кнопки) === */}
     <div className="
       flex-1 flex flex-col items-center lg:items-start 
@@ -446,7 +450,12 @@ useEffect(() => {
       <motion.h1
         initial="visible"
         variants={fadeInUp}
-        className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 leading-snug mb-4 md:mb-6"
+        className="
+          text-3xl sm:text-4xl lg:text-5xl 
+          max-[380px]:text-2xl 
+          font-bold text-neutral-900 leading-snug 
+          mb-3 sm:mb-5
+        "
       >
         Искусственное окно —{" "}
         <span className="text-amber-500">
@@ -458,10 +467,14 @@ useEffect(() => {
       <motion.p
         initial="visible"
         variants={fadeInUp}
-        className="text-neutral-700 text-base md:text-lg mb-2 md:mb-4 max-w-md"
+        className="
+          text-neutral-700 text-base sm:text-lg 
+          max-[380px]:text-sm 
+          mb-3 sm:mb-5 max-w-md
+        "
       >
-        Естественный свет и комфорт даже там, где нет окон. Управляйте светом,
-        который подстраивается под вас.
+        Естественный свет и комфорт даже там, где нет окон. 
+        Управляйте светом, который подстраивается под вас.
       </motion.p>
 
       {/* === Окно для мобильных === */}
@@ -469,15 +482,16 @@ useEffect(() => {
         variants={fadeInUp}
         initial="visible"
         className="
-          relative flex items-center justify-center my-6 lg:hidden 
-          w-[240px] h-[340px]
-          sm:w-[280px] sm:h-[400px]
+          relative flex items-center justify-center my-5 lg:hidden 
+          w-[220px] h-[300px]
+          sm:w-[260px] sm:h-[360px]
           max-h-[55vh] sm:max-h-[60vh]
+          max-[380px]:w-[180px] max-[380px]:h-[250px]
           transition-all duration-300
         "
       >
         <motion.div
-          className="absolute inset-0 rounded-3xl blur-[100px] opacity-50 animate-pulse-slow"
+          className="absolute inset-0 rounded-3xl blur-[80px] opacity-50 animate-pulse-slow"
           style={{ backgroundColor: activeMode.color }}
           aria-hidden
         />
@@ -492,13 +506,16 @@ useEffect(() => {
       <motion.div
         initial="visible"
         variants={fadeInUp}
-        className="flex gap-3 mb-5 md:mb-6 flex-wrap justify-center lg:justify-start"
+        className="
+          flex gap-2 sm:gap-3 mb-5 md:mb-6 
+          flex-wrap justify-center lg:justify-start
+        "
       >
         {modes.map((mode) => (
           <button
             key={mode.name}
             onClick={() => setActiveMode(mode)}
-            className={`px-5 py-1.5 rounded-full text-sm font-medium border transition-all ${
+            className={`px-4 py-1 sm:px-5 sm:py-1.5 rounded-full text-sm font-medium border transition-all ${
               activeMode.name === mode.name
                 ? "bg-black text-white border-black shadow-sm"
                 : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
@@ -513,11 +530,21 @@ useEffect(() => {
       <motion.div
         initial="visible"
         variants={fadeInUp}
-        className="flex flex-col md:flex-row gap-3 w-full max-w-xs md:max-w-none md:w-auto justify-center lg:justify-start pb-[env(safe-area-inset-bottom)]"
+        className="
+          flex flex-col md:flex-row gap-3 
+          w-full max-w-xs md:max-w-none md:w-auto 
+          justify-center lg:justify-start 
+          pb-[env(safe-area-inset-bottom)]
+        "
       >
         <button
           onClick={() => setShowModal(true)}
-          className="bg-amber-400 hover:bg-amber-500 text-black font-medium py-3 px-8 rounded-xl shadow-md transition w-full md:w-auto"
+          className="
+            bg-amber-400 hover:bg-amber-500 text-black font-medium 
+            py-3 px-8 rounded-xl shadow-md transition 
+            w-full md:w-auto 
+            max-[380px]:py-2 max-[380px]:text-sm
+          "
         >
           Почувствуй свет солнца
         </button>
@@ -527,7 +554,12 @@ useEffect(() => {
               .getElementById("benefits")
               ?.scrollIntoView({ behavior: "smooth" })
           }
-          className="border border-gray-400 text-gray-700 font-medium py-3 px-8 rounded-xl hover:bg-gray-50 transition w-full md:w-auto"
+          className="
+            border border-gray-400 text-gray-700 font-medium 
+            py-3 px-8 rounded-xl hover:bg-gray-50 transition 
+            w-full md:w-auto 
+            max-[380px]:py-2 max-[380px]:text-sm
+          "
         >
           Подробнее
         </button>
@@ -577,6 +609,7 @@ useEffect(() => {
 
 
 
+
         {/* === 3️⃣ УНИКАЛЬНОСТЬ === */}
         <SectionBenefits />
 
@@ -615,91 +648,101 @@ function SectionBenefits() {
       className="
         relative 
         w-full 
-        min-h-[100dvh] 
         flex flex-col items-center justify-center
         text-center 
-        px-3 md:px-6 
-        py-[calc(env(safe-area-inset-top)+3.5rem)] 
+        px-3 sm:px-5 md:px-6 
+        pt-[calc(env(safe-area-inset-top)+4rem)]   /* отступ от шапки */
+        pb-[calc(env(safe-area-inset-bottom)+3rem)]
         md:py-20
-        snap-start overflow-hidden
-        
+        snap-start
+        overflow-y-auto
+        bg-white/10
+        min-h-screen
+        md:min-h-[100vh]
       "
       style={{
         backgroundImage: `url(${sky})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "scroll",
       }}
     >
-      <div className="
-        relative z-10 
-        w-full max-w-5xl 
-        flex flex-col items-center justify-center 
-        h-full 
-        md:justify-center md:gap-8
-      ">
-        
+      <div
+        className="
+          relative z-10 
+          w-full max-w-6xl 
+          flex flex-col items-center 
+          justify-start
+          md:justify-center
+          gap-1 sm:gap-10
+        "
+      >
         {/* === Заголовок === */}
-        <h2 className="text-2xl sm:text-4xl font-bold text-neutral-900 mb-3 sm:mb-6 leading-snug">
+        <h2
+    className="
+      text-2xl sm:text-4xl 
+      max-[480px]:text-xl
+      font-semibold mb-6 text-neutral-900 leading-snug text-center
+    "
+  >
           Что делает Искусственное окно уникальным
         </h2>
 
-        {/* === Верхняя карточка (ширина = нижним карточкам) === */}
-        <div className="text-center mb-8 max-w-3xl mx-auto">
-          <h3 className="text-[18px] sm:text-2xl font-bold text-amber-600 mb-2 sm:mb-3 leading-snug">
-            Свет, приближённый к настоящему солнцу.
+        {/* === Верхний блок текста === */}
+        <div className="text-center mb-2 sm:mb-6 max-w-3xl mx-auto px-2">
+          <h3 className="text-lg sm:text-2xl font-bold text-amber-600 mb-3 leading-snug">
+            Свет, приближённый к настоящему солнцу
           </h3>
-         
-          <p className="text-[14px] sm:text-lg text-neutral-800 leading-snug max-w-2xl mx-auto">
-            Благодаря многоканальной LED-матрице искусственное{" "}
-            окно формирует <strong className="text-amber-600">сбалансированный спектр</strong>{" "}
-            без синего пика и с высоким индексом цветопередачи (CRI 90+), обеспечивая естественное восприятие и комфорт для глаз.
+
+          <p className="text-sm sm:text-lg text-neutral-800 leading-snug max-w-2xl mx-auto">
+            Благодаря многоканальной LED-матрице искусственное окно формирует{" "}
+            <strong className="text-amber-600">сбалансированный спектр</strong>{" "}
+            без синего пика и с высоким индексом цветопередачи (CRI 90+),
+            обеспечивая естественное восприятие и комфорт для глаз.
           </p>
         </div>
 
         {/* === Контейнер карточек === */}
-<div
+        <div
   className="
     flex flex-col md:grid md:grid-cols-3 
-    gap-3 sm:gap-8 
+    gap-2 sm:gap-3 md:gap-4 
     w-full max-w-5xl
-    flex-1
+    px-2 sm:px-0
+    mt-2 sm:mt-4
   "
 >
-  <FlipCard
-    title="Естественный свет"
-    frontNote="Плавный переход от рассвета до заката."
-    backText="Высокий индекс цветопередачи CRI 90+ и регулировка 3000–5700 K создают свет, максимально близкий к солнечному."
-    icon={<SunMedium className="w-9 h-9 sm:w-14 sm:h-14 text-amber-500" strokeWidth={1.75} />}
-  />
-  <FlipCard
-    title="Интеллект внутри"
-    frontNote="Автономная работа и энергоэффективность."
-    backText="Контроллер ESP32 управляет каналами света и регулирует спектр автоматически."
-    icon={<Cpu className="w-9 h-9 sm:w-14 sm:h-14 text-amber-500" strokeWidth={1.75} />}
-  />
-  <FlipCard
-    title="Комфорт и контроль"
-    frontNote="С телефона или автоматически."
-    backText="Приложение, расписание и режимы дня — всё под контролем."
-    icon={<Smartphone className="w-9 h-9 sm:w-14 sm:h-14 text-amber-500" strokeWidth={1.75} />}
-  />
-</div>
+          <FlipCard
+            title="Естественный свет"
+            frontNote="Плавный переход от рассвета до заката."
+            backText="Высокий индекс цветопередачи CRI 90+ и регулировка 3000–5700 K создают свет, максимально близкий к солнечному."
+            icon={<SunMedium className="w-10 h-10 text-amber-500" strokeWidth={1.75} />}
+          />
 
+          <FlipCard
+            title="Интеллект внутри"
+            frontNote="Автономная работа и энергоэффективность."
+            backText="Контроллер ESP32 управляет каналами света и регулирует спектр автоматически."
+            icon={<Cpu className="w-10 h-10 text-amber-500" strokeWidth={1.75} />}
+          />
 
+          <FlipCard
+            title="Комфорт и контроль"
+            frontNote="С телефона или автоматически."
+            backText="Приложение, расписание и режимы дня — всё под контролем."
+            icon={<Smartphone className="w-10 h-10 text-amber-500" strokeWidth={1.75} />}
+          />
+        </div>
       </div>
-
-
     </section>
   );
 }
 
+
+
 function SectionSpectrum() {
   const [expanded, setExpanded] = useState<string | null>(null);
-
-  const toggleExpand = (id: string | null) => {
+  const toggleExpand = (id: string | null) =>
     setExpanded(id === expanded ? null : id);
-  };
 
   const cards = [
     {
@@ -730,30 +773,38 @@ function SectionSpectrum() {
     <section
       id="why"
       className="
-        relative 
-        w-full 
-        snap-start
-        flex flex-col items-center 
+        relative w-full snap-start snap-always
+        flex flex-col items-center justify-center
         text-center px-6
-        h-auto md:h-screen
-        md:justify-center
-        overflow-visible
-        pt-[calc(env(safe-area-inset-top)+3.5rem)]
-        pb-[calc(env(safe-area-inset-bottom)+2.5rem)]
+        h-screen min-h-[100dvh]
+        overflow-hidden
+        pt-[calc(env(safe-area-inset-top)+4rem)]
+        pb-[calc(env(safe-area-inset-bottom)+3rem)]
       "
       style={{
         background:
           "radial-gradient(circle at 35% 40%, rgba(90,160,255,0.25), rgba(255,255,255,1) 80%)",
       }}
     >
-      <div className="max-w-6xl w-full flex flex-col items-center md:justify-center md:h-full">
+      <div className="max-w-6xl w-full flex flex-col items-center justify-center h-full">
         {/* === Заголовок === */}
-        <h2 className="text-2xl sm:text-4xl font-semibold mb-6 text-neutral-900">
+        <h2
+          className="
+            text-2xl sm:text-4xl max-[480px]:text-xl
+            font-semibold mb-1 sm:mb-6 text-neutral-900 leading-snug text-center
+          "
+        >
           Почему обычное искусственное освещение вредно
         </h2>
 
         {/* === Описание === */}
-        <p className="text-base sm:text-lg text-neutral-700 mb-10 text-center leading-relaxed max-w-3xl mx-auto">
+        <p
+          className="
+            text-base sm:text-lg max-[480px]:text-sm
+            text-neutral-700 mb-1 sm:mb-10 text-center leading-relaxed
+            max-w-3xl mx-auto
+          "
+        >
           Большинство источников света используют{" "}
           <strong className="text-sky-600">синий кристалл (440–460 нм)</strong>,
           создающий выраженный “синий пик” в спектре. Такое излучение вызывает
@@ -767,8 +818,8 @@ function SectionSpectrum() {
         <div
           className="
             flex flex-row flex-wrap justify-center items-start
-            gap-6 sm:gap-10
-            w-full max-w-6xl mb-10
+            gap-4 sm:gap-10
+            w-full max-w-6xl mb-1 sm:mb-6
           "
         >
           {cards.map((card) => (
@@ -776,12 +827,11 @@ function SectionSpectrum() {
               key={card.id}
               onClick={() => toggleExpand(card.id)}
               className="
-                flex flex-col items-center text-center flex-1 
-                min-w-[140px] max-w-[180px] md:max-w-[400px]
-                transition-transform duration-300 
-                active:scale-95
+                flex flex-col items-center text-center
+                flex-1 min-w-[140px] max-w-[180px] md:max-w-[400px]
+                transition-transform duration-300 active:scale-95
                 cursor-pointer md:cursor-default
-                p-3 sm:p-4
+                p-2 sm:p-4
               "
             >
               <h3 className="text-sm sm:text-base font-semibold mb-3 text-neutral-800">
@@ -792,10 +842,8 @@ function SectionSpectrum() {
                 alt={card.title}
                 className="
                   w-[130px] sm:w-[250px] md:w-[380px]
-                  object-contain mix-blend-multiply 
+                  object-contain mix-blend-multiply
                   drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)]
-                  transition-transform duration-300
-                  md:hover:scale-100
                 "
               />
               <p className="mt-3 text-xs sm:text-sm text-neutral-700 max-w-sm">
@@ -804,35 +852,91 @@ function SectionSpectrum() {
             </div>
           ))}
         </div>
-          
-        {/* === Цитаты === */}
-        <div className="space-y-5 text-left max-w-3xl mx-auto text-neutral-700 leading-snug text-[13px] sm:text-base">
-          <blockquote className="border-l-4 border-amber-400 pl-4 italic">
-            “Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет
-            возрастные изменения сетчатки.”
-            <br />
-            <span className="not-italic text-[11px] sm:text-sm text-gray-500">
-              — Tosini et al., *Nature Aging Mechanisms*, 2024
-            </span>
-          </blockquote>
 
-          <blockquote className="border-l-4 border-amber-400 pl-4 italic">
-            “Синий свет подавляет выработку мелатонина в два раза сильнее
-            зелёного, нарушая сон и циркадные ритмы человека.”
-            <br />
-            <span className="not-italic text-[11px] sm:text-sm text-gray-500">
-              — Harvard Health Publishing, 2018
-            </span>
-          </blockquote>
+        {/* === Цитаты (свайп всегда включён на мобильных) === */}
+        <div
+          className="
+            w-full max-w-3xl mx-auto text-neutral-700 leading-snug
+            text-[13px] sm:text-base max-[360px]:text-[12px]
+            px-2 sm:px-0 pb-3 sm:pb-0
+          "
+        >
+          <div
+            className="
+              flex md:hidden flex-row overflow-x-auto scroll-smooth snap-x snap-mandatory
+              whitespace-nowrap -mx-4 px-4
+              [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
+              touch-pan-x
+            "
+          >
+            {[
+              {
+                quote:
+                  "“Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет возрастные изменения сетчатки.”",
+                source: "— Tosini et al., *Nature Aging Mechanisms*, 2024",
+              },
+              {
+                quote:
+                  "“Синий свет подавляет выработку мелатонина в два раза сильнее зелёного, нарушая сон и циркадные ритмы человека.”",
+                source: "— Harvard Health Publishing, 2018",
+              },
+              {
+                quote:
+                  "“Хроническое воздействие коротковолнового света связано с развитием макулярной дегенерации и зрительной усталости.”",
+                source: "— Framingham Eye Study, 2021",
+              },
+            ].map((item, i) => (
+              <blockquote
+                key={i}
+                className="
+                  inline-block align-top min-w-[85vw] snap-start mr-3 last:mr-0
+                  border-l-4 border-amber-400 pl-4 pr-4 py-3 italic
+                  rounded-2xl bg-white/60 backdrop-blur-sm shadow-md
+                  leading-relaxed whitespace-normal
+                "
+              >
+                <p className="m-0">{item.quote}</p>
+                <span className="not-italic text-[11px] max-[360px]:text-[10px] text-gray-500 block mt-1">
+                  {item.source}
+                </span>
+              </blockquote>
+            ))}
+          </div>
 
-          <blockquote className="border-l-4 border-amber-400 pl-4 italic">
-            “Хроническое воздействие коротковолнового света связано с развитием
-            макулярной дегенерации и зрительной усталости.”
-            <br />
-            <span className="not-italic text-[11px] sm:text-sm text-gray-500">
-              — Framingham Eye Study, 2021
-            </span>
-          </blockquote>
+          {/* Десктопная версия — обычные вертикальные цитаты */}
+          <div className="hidden md:flex flex-col gap-5">
+            {[
+              {
+                quote:
+                  "“Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет возрастные изменения сетчатки.”",
+                source: "— Tosini et al., *Nature Aging Mechanisms*, 2024",
+              },
+              {
+                quote:
+                  "“Синий свет подавляет выработку мелатонина в два раза сильнее зелёного, нарушая сон и циркадные ритмы человека.”",
+                source: "— Harvard Health Publishing, 2018",
+              },
+              {
+                quote:
+                  "“Хроническое воздействие коротковолнового света связано с развитием макулярной дегенерации и зрительной усталости.”",
+                source: "— Framingham Eye Study, 2021",
+              },
+            ].map((item, i) => (
+              <blockquote
+                key={i}
+                className="
+                  border-l-4 border-amber-400 pl-4 pr-4 py-3 italic
+                  rounded-2xl bg-white/60 backdrop-blur-sm shadow-md
+                  leading-relaxed whitespace-normal
+                "
+              >
+                <p className="m-0">{item.quote}</p>
+                <span className="not-italic text-[11px] sm:text-sm text-gray-500 block mt-1">
+                  {item.source}
+                </span>
+              </blockquote>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -853,14 +957,13 @@ function SectionSpectrum() {
           >
             <motion.div
               className="
-                bg-white/70 backdrop-blur-md rounded-3xl shadow-2xl
-                border border-white/60
-                flex flex-col items-center text-center p-6 mx-4
-                max-w-[90vw]
+                bg-white/80 backdrop-blur-md rounded-3xl shadow-2xl
+                border border-white/60 flex flex-col items-center text-center
+                p-6 mx-4 max-w-[90vw]
               "
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              exit={{ scale: 0.9, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 160, damping: 18 }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -874,7 +977,7 @@ function SectionSpectrum() {
                     <img
                       src={card.img}
                       alt={card.title}
-                      className="w-[85vw] max-w-[500px] object-contain mix-blend-multiply drop-shadow-[0_8px_24px_rgba(0,0,0,0.15)]"
+                      className="w-[85vw] max-w-[500px] object-contain mix-blend-multiply drop-shadow-md"
                     />
                     <p className="mt-4 text-sm text-neutral-700">{card.text}</p>
                   </div>
@@ -892,6 +995,7 @@ function SectionSpectrum() {
 
 
 
+
 function SectionPlaces() {
   return (
     <section id="places" className="w-full snap-start">
@@ -899,7 +1003,7 @@ function SectionPlaces() {
         image={room2}
         title="Дом"
         text={
-          <div className="bg-white/15 text-neutral-800backdrop-blur-[3px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+          <div className="bg-black/30 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
             <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
               Просыпайтесь с рассветом и засыпайте в мягком вечернем свете.
             </p>
@@ -926,7 +1030,7 @@ function SectionPlaces() {
         image={office4}
         title="Офис"
         text={
-          <div className="bg-white/10 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+          <div className="bg-black/30 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
             <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
               Искусственное окно делает офис светлее, продуктивнее и комфортнее.
             </p>
@@ -958,7 +1062,7 @@ function SectionPlaces() {
         image={kids2}
         title="Образовательные учреждения"
         text={
-          <div className="bg-white/10 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
+          <div className="bg-black/30 backdrop-blur-[2px] rounded-3xl px-6 py-6 sm:px-10 sm:py-8 max-w-4xl mx-auto">
             <p className="text-[17px] md:text-[20px] text-center mb-4 font-medium leading-relaxed">
               Искусственное окно создаёт здоровую световую среду для обучения и отдыха.
             </p>
@@ -1225,15 +1329,8 @@ function ModalOrder({
   );
 }
 
-
-
-
-
-
-
-
 /* === Вспомогательные компоненты === */
-/* === Компонент FlipCard (с переворотом и адаптивной подсказкой) === */
+/* === Компонент FlipCard (выровненные заголовки и линии) === */
 
 interface FlipCardProps {
   title: string;
@@ -1242,7 +1339,7 @@ interface FlipCardProps {
   icon: React.ReactNode;
 }
 
-function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
+export function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
   const [flipped, setFlipped] = useState(false);
   const [showHint, setShowHint] = useState(true);
 
@@ -1258,10 +1355,9 @@ function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
       viewport={{ once: true }}
       transition={{ type: "spring", stiffness: 120, damping: 12, delay: 0.1 }}
       className="
-        relative w-full 
-        flex-1 max-md:flex-1 
-        cursor-pointer group select-none
+        relative w-full flex-1 cursor-pointer group select-none
         [perspective:1000px]
+        min-h-[110px] sm:min-h-[240px] md:min-h-[260px]
       "
     >
       <div
@@ -1270,23 +1366,42 @@ function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
         }`}
       >
         {/* === Передняя сторона === */}
-        <div className="relative w-full h-full bg-white/40 backdrop-blur-md rounded-2xl p-5 shadow-lg flex flex-col justify-center items-center text-center backface-hidden border border-white/40">
-          <div className="rounded-2xl ring-0 group-hover:ring-2 group-hover:ring-amber-300/40 transition-all duration-700 pointer-events-none"></div>
-
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <div className="w-10 h-10 flex items-center justify-center text-amber-500">
+        <div className="
+          relative w-full h-full bg-white/40 backdrop-blur-md 
+          rounded-2xl p-2 sm:p-4 lg:p-6 shadow-md 
+          flex flex-col justify-between text-center 
+          backface-hidden border border-white/40
+        ">
+          {/* Верхняя часть: иконка + заголовок + линия */}
+          <div className="flex flex-col items-center justify-start flex-none space-y-1.5 sm:space-y-2 lg:space-y-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 flex items-center justify-center text-amber-500">
               {icon}
             </div>
-            <h3 className="text-lg font-bold text-amber-600">{title}</h3>
-            <div className="w-8 h-[2px] bg-amber-400 rounded-full"></div>
-            <p className="text-sm text-neutral-700 leading-snug px-3">
+
+            {/* Заголовок — теперь фиксированный по высоте */}
+            <h3 className="
+              text-base sm:text-lg lg:text-xl font-semibold text-amber-600 leading-tight
+              min-h-[1.8em] sm:min-h-[2em] flex items-center justify-center
+            ">
+              {title}
+            </h3>
+
+            <div className="w-8 lg:w-10 h-[2px] bg-amber-400 rounded-full"></div>
+          </div>
+
+          {/* Центральная часть (описание) */}
+          <div className="flex-1 flex items-center justify-center">
+            <p className="
+              text-[13px] sm:text-sm lg:text-base text-neutral-700 leading-snug px-2
+            ">
               {frontNote}
             </p>
           </div>
 
+          {/* Подсказка ↻ */}
           {showHint && (
             <motion.div
-              className="absolute bottom-2 right-3 text-amber-500 text-[11px] sm:text-xs opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"
+              className="absolute bottom-1.5 right-2 text-amber-500 text-[10px] sm:text-[11px] lg:text-[13px] opacity-80 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500"
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{
                 duration: 2,
@@ -1294,14 +1409,18 @@ function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
                 ease: "easeInOut",
               }}
             >
-              нажмите ↻
+              ↻
             </motion.div>
           )}
         </div>
 
         {/* === Задняя сторона === */}
-        <div className="absolute inset-0 bg-white/50 backdrop-blur-md rounded-2xl p-6 shadow-md flex items-center justify-center rotate-y-180 backface-hidden border border-white/40">
-          <p className="text-sm sm:text-base text-neutral-800 leading-relaxed text-center px-2">
+        <div className="
+          absolute inset-0 bg-white/50 backdrop-blur-md rounded-2xl 
+          p-4 sm:p-5 lg:p-6 shadow-md flex items-center justify-center 
+          rotate-y-180 backface-hidden border border-white/40
+        ">
+          <p className="text-[13px] sm:text-sm lg:text-base text-neutral-800 leading-relaxed text-center px-1">
             {backText}
           </p>
         </div>
@@ -1309,6 +1428,10 @@ function FlipCard({ title, frontNote, backText, icon }: FlipCardProps) {
     </motion.div>
   );
 }
+
+
+
+
 
 
 
