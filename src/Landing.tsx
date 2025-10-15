@@ -119,7 +119,7 @@ useEffect(() => {
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 backdrop-blur-md border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
           <a href="#home" className="flex items-center gap-2">
-            <img src="/logo3.png" alt="Логотип" className="h-18 w-auto" />
+            <img src="/logo4.png" alt="Логотип" className="h-14 w-auto" />
             <span className="text-sm sm:text-base font-semibold text-neutral-900">
               Искусственное окно
             </span>
@@ -741,8 +741,21 @@ function SectionBenefits() {
 
 function SectionSpectrum() {
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [isTwoColumnMode, setIsTwoColumnMode] = useState(false);
   const toggleExpand = (id: string | null) =>
     setExpanded(id === expanded ? null : id);
+
+  // === Проверяем высоту и включаем 2-колоночный режим ===
+  useEffect(() => {
+    const checkLayout = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsTwoColumnMode(width >= 768 && height < 1000);
+    };
+    checkLayout();
+    window.addEventListener("resize", checkLayout);
+    return () => window.removeEventListener("resize", checkLayout);
+  }, []);
 
   const cards = [
     {
@@ -769,6 +782,24 @@ function SectionSpectrum() {
     },
   ];
 
+  const quotes = [
+    {
+      quote:
+        "“Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет возрастные изменения сетчатки.”",
+      source: "— Tosini et al., *Nature Aging Mechanisms*, 2024",
+    },
+    {
+      quote:
+        "“Синий свет подавляет выработку мелатонина в два раза сильнее зелёного, нарушая сон и циркадные ритмы человека.”",
+      source: "— Harvard Health Publishing, 2018",
+    },
+    {
+      quote:
+        "“Хроническое воздействие коротковолнового света связано с развитием макулярной дегенерации и зрительной усталости.”",
+      source: "— Framingham Eye Study, 2021",
+    },
+  ];
+
   return (
     <section
       id="why"
@@ -791,7 +822,7 @@ function SectionSpectrum() {
         <h2
           className="
             text-2xl sm:text-4xl max-[480px]:text-xl
-            font-semibold mb-1 sm:mb-6 text-neutral-900 leading-snug text-center
+            font-semibold mb-1 sm:mb-4 text-neutral-900 leading-snug text-center
           "
         >
           Почему обычное искусственное освещение вредно
@@ -801,7 +832,7 @@ function SectionSpectrum() {
         <p
           className="
             text-base sm:text-lg max-[480px]:text-sm
-            text-neutral-700 mb-1 sm:mb-10 text-center leading-relaxed
+            text-neutral-700 mb-1 sm:mb-4 text-center leading-relaxed
             max-w-3xl mx-auto
           "
         >
@@ -819,7 +850,7 @@ function SectionSpectrum() {
           className="
             flex flex-row flex-wrap justify-center items-start
             gap-4 sm:gap-10
-            w-full max-w-6xl mb-1 sm:mb-6
+            w-full max-w-6xl mb-1 sm:mb-1
           "
         >
           {cards.map((card) => (
@@ -853,14 +884,15 @@ function SectionSpectrum() {
           ))}
         </div>
 
-        {/* === Цитаты (свайп всегда включён на мобильных) === */}
+        {/* === Цитаты === */}
         <div
           className="
-            w-full max-w-3xl mx-auto text-neutral-700 leading-snug
+            w-full max-w-5xl mx-auto text-neutral-700 leading-snug
             text-[13px] sm:text-base max-[360px]:text-[12px]
             px-2 sm:px-0 pb-3 sm:pb-0
           "
         >
+          {/* Мобильный свайп */}
           <div
             className="
               flex md:hidden flex-row overflow-x-auto scroll-smooth snap-x snap-mandatory
@@ -869,23 +901,7 @@ function SectionSpectrum() {
               touch-pan-x
             "
           >
-            {[
-              {
-                quote:
-                  "“Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет возрастные изменения сетчатки.”",
-                source: "— Tosini et al., *Nature Aging Mechanisms*, 2024",
-              },
-              {
-                quote:
-                  "“Синий свет подавляет выработку мелатонина в два раза сильнее зелёного, нарушая сон и циркадные ритмы человека.”",
-                source: "— Harvard Health Publishing, 2018",
-              },
-              {
-                quote:
-                  "“Хроническое воздействие коротковолнового света связано с развитием макулярной дегенерации и зрительной усталости.”",
-                source: "— Framingham Eye Study, 2021",
-              },
-            ].map((item, i) => (
+            {quotes.map((item, i) => (
               <blockquote
                 key={i}
                 className="
@@ -903,25 +919,14 @@ function SectionSpectrum() {
             ))}
           </div>
 
-          {/* Десктопная версия — обычные вертикальные цитаты */}
-          <div className="hidden md:flex flex-col gap-5">
-            {[
-              {
-                quote:
-                  "“Синий свет (440–460 нм) вызывает окислительный стресс и ускоряет возрастные изменения сетчатки.”",
-                source: "— Tosini et al., *Nature Aging Mechanisms*, 2024",
-              },
-              {
-                quote:
-                  "“Синий свет подавляет выработку мелатонина в два раза сильнее зелёного, нарушая сон и циркадные ритмы человека.”",
-                source: "— Harvard Health Publishing, 2018",
-              },
-              {
-                quote:
-                  "“Хроническое воздействие коротковолнового света связано с развитием макулярной дегенерации и зрительной усталости.”",
-                source: "— Framingham Eye Study, 2021",
-              },
-            ].map((item, i) => (
+          {/* Десктопная версия */}
+          <div
+            className={`
+              hidden md:grid gap-5 transition-all duration-300
+              ${isTwoColumnMode ? "grid-cols-2" : "grid-cols-1"}
+            `}
+          >
+            {quotes.map((item, i) => (
               <blockquote
                 key={i}
                 className="
@@ -989,6 +994,7 @@ function SectionSpectrum() {
     </section>
   );
 }
+
 
 
 
@@ -1183,55 +1189,47 @@ function SectionCTA({
 
 {/* === Футер === */}
 <footer className="bg-neutral-900 text-white py-12 sm:py-16 px-6 sm:px-8 mt-auto">
-  <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 text-left">
+  <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_1fr] gap-8 sm:gap-10 text-left items-stretch">
     
-    {/* === Левая колонка: логотип и описание === */}
-    <div className="flex flex-col items-center md:items-start text-center md:text-left">
-      {/* Логотип */}
+    {/* === Левая колонка: логотип на всю высоту === */}
+    <div className="flex justify-center md:justify-start items-center md:items-stretch">
       <img
-        src="/logo.png"
+        src="/logo4.png"
         alt="Логотип Искусственное окно"
-        className="h-20 sm:h-20 w-auto mb-4 opacity-90 hover:opacity-100 transition"
+        className="h-40 max-h-40 md:max-h-none object-contain"
       />
+    </div>
 
+    {/* === Колонка: описание === */}
+    <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left">
       <h3 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">
         Искусственное окно
       </h3>
-
       <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-[260px]">
         Свет, который живёт по тем же законам, что и солнце. <br />
         Уют, здоровье и ритм природы — в каждом дне.
       </p>
     </div>
 
-    {/* === Средняя колонка: навигация === */}
-    <div className="text-center md:text-left">
+    {/* === Колонка: навигация === */}
+    <div className="flex flex-col justify-center text-center md:text-left">
       <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-amber-400">
         Разделы
       </h4>
       <ul className="space-y-1 sm:space-y-2 text-neutral-300 text-sm sm:text-base">
+        <li><a href="#home" className="hover:text-amber-400 transition">Главная</a></li>
+        <li><a href="#benefits" className="hover:text-amber-400 transition">Преимущества</a></li>
+        <li><a href="#places" className="hover:text-amber-400 transition">Где полезно</a></li>
         <li>
-          <a href="#home" className="hover:text-amber-400 transition">Главная</a>
-        </li>
-        <li>
-          <a href="#benefits" className="hover:text-amber-400 transition">Преимущества</a>
-        </li>
-        <li>
-          <a href="#places" className="hover:text-amber-400 transition">Где полезно</a>
-        </li>
-        <li>
-          <button
-            onClick={onClick}
-            className="hover:text-amber-400 transition"
-          >
+          <button onClick={onClick} className="hover:text-amber-400 transition">
             Заказать
           </button>
         </li>
       </ul>
     </div>
 
-    {/* === Правая колонка: контакты === */}
-    <div className="text-center md:text-left">
+    {/* === Колонка: контакты === */}
+    <div className="flex flex-col justify-center text-center md:text-left">
       <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-amber-400">
         Контакты
       </h4>
@@ -1247,6 +1245,7 @@ function SectionCTA({
     © {new Date().getFullYear()} Искусственное окно. Все права защищены.
   </div>
 </footer>
+
 
         </div>
       </section>
