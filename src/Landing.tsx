@@ -128,7 +128,7 @@ useEffect(() => {
   font-semibold 
   text-[#774829]
 ">
-  Искусственное окно
+  ИСКУССТВЕНОЕ ОКНО
 </span>
           </a>
           <nav className="hidden md:flex items-center gap-6 text-sm text-neutral-700">
