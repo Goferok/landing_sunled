@@ -119,10 +119,17 @@ useEffect(() => {
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 backdrop-blur-md border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
           <a href="#home" className="flex items-center gap-2">
-            <img src="/logo4.png" alt="Логотип" className="h-14 w-auto" />
-            <span className="text-sm sm:text-base font-semibold text-neutral-900">
-              Искусственное окно
-            </span>
+            <img src="/logo4.png" alt="Логотип" className="h-13 w-auto" />
+            <span className="
+  text-sm               /* базовый размер для мобильных */
+  sm:text-base          /* немного больше на планшетах */
+  lg:text-lg            /* крупнее на десктопах */
+  xl:text-xl            /* ещё чуть крупнее на больших экранах */
+  font-semibold 
+  text-[#774829]
+">
+  Искусственное окно
+</span>
           </a>
           <nav className="hidden md:flex items-center gap-6 text-sm text-neutral-700">
             <a href="#home" className="hover:text-amber-600 transition">
@@ -744,6 +751,15 @@ function SectionSpectrum() {
   const [isTwoColumnMode, setIsTwoColumnMode] = useState(false);
   const toggleExpand = (id: string | null) =>
     setExpanded(id === expanded ? null : id);
+  // === Исправляем 100vh при системном масштабе (Windows Zoom 125%) ===
+useEffect(() => {
+  const setVh = () => {
+    document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
+  };
+  setVh();
+  window.addEventListener("resize", setVh);
+  return () => window.removeEventListener("resize", setVh);
+}, []);
 
   // === Проверяем высоту и включаем 2-колоночный режим ===
   useEffect(() => {
@@ -802,16 +818,16 @@ function SectionSpectrum() {
 
   return (
     <section
-      id="why"
-      className="
-        relative w-full snap-start snap-always
-        flex flex-col items-center justify-center
-        text-center px-6
-        h-screen min-h-[100dvh]
-        overflow-hidden
-        pt-[calc(env(safe-area-inset-top)+4rem)]
-        pb-[calc(env(safe-area-inset-bottom)+3rem)]
-      "
+  id="why"
+  className="
+    relative w-full snap-start snap-always
+    flex flex-col items-center justify-center
+    text-center px-6
+    min-h-[calc(var(--vh,1vh)*100)]
+    overflow-y-auto md:overflow-visible
+    pt-[calc(env(safe-area-inset-top)+4rem)]
+    pb-[calc(env(safe-area-inset-bottom)+3rem)]
+  "
       style={{
         background:
           "radial-gradient(circle at 35% 40%, rgba(90,160,255,0.25), rgba(255,255,255,1) 80%)",
@@ -1489,7 +1505,7 @@ function FullImageBlock({
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
       <div className="relative z-10 max-w-3xl px-6 text-white">
-        <h3 className="text-3xl font-semibold text-amber-400 mb-4">{title}</h3>
+        <h3 className="text-3xl font-semibold text-[#774829] mb-4">{title}</h3>
         <p className="text-lg text-white/90 leading-relaxed">{text}</p>
       </div>
     </div>
