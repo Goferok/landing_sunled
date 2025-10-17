@@ -119,7 +119,7 @@ useEffect(() => {
       <header className="fixed top-0 left-0 right-0 z-40 bg-white/70 backdrop-blur-md border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
           <a href="#home" className="flex items-center gap-2">
-            <img src="/logo4.png" alt="Логотип" className="h-13 w-auto" />
+            <img src="/logo5.png" alt="Логотип" className="h-13 w-auto" />
             <span className="
   text-sm               /* базовый размер для мобильных */
   sm:text-base          /* немного больше на планшетах */
@@ -1210,7 +1210,7 @@ function SectionCTA({
     {/* === Левая колонка: логотип на всю высоту === */}
     <div className="flex justify-center md:justify-start items-center md:items-stretch">
       <img
-        src="/logo4.png"
+        src="/logo5.png"
         alt="Логотип Искусственное окно"
         className="h-40 max-h-40 md:max-h-none object-contain"
       />
